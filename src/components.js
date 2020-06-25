@@ -34,7 +34,7 @@ const InitialsUI = ({ initials, setInitial, large }) => {
           align="start"
         />
       </Box>
-       <InitialField
+      <InitialField
         name="reserve"
         label="Contribute National Currency Collateral"
         value={reserve}
@@ -75,7 +75,7 @@ const InitialsUI = ({ initials, setInitial, large }) => {
 };
 
 const PlayMonitor = ({ initials }) => {
-  const { reserve, supply} = initials;
+  const { reserve, supply } = initials;
   return (
     <Box size="small" gap="medium" pad="medium">
       <NumberDisplay
@@ -90,8 +90,8 @@ const PlayMonitor = ({ initials }) => {
         label="CIC Supply"
         color="brand"
         align="start"
-	  />
-	  {/*
+      />
+      {/*
 
       <NumberDisplay
         value={getCRR(reserve, supply)}
@@ -127,7 +127,7 @@ const InitialField = ({
             size="large"
             value={value.toString()}
             decimals={0}
-            onChange={({ target: { value } }) => onChange(Number(value))}
+            onInput={({ target: { value } }) => onChange(Number(value))}
             {...otherProps}
           />
         </Box>
@@ -199,5 +199,11 @@ const TextDisplay = ({
   </Box>
 );
 
-
-export { AppBar, InitialField, InitialsUI, PlayMonitor, NumberDisplay, TextDisplay };
+export {
+  AppBar,
+  InitialField,
+  InitialsUI,
+  PlayMonitor,
+  NumberDisplay,
+  TextDisplay,
+};
