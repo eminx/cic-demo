@@ -71,63 +71,68 @@ function App() {
   const buyCIC = (cicTxInput) => {
     const { cicBal, cicPurchases } = initials;
     if (cicTxInput <= cicBal) {
-      const newcicPurchases = cicPurchases + cicTxInput;
-      const newcicBal = cicBal - cicTxInput;
-      setInitials({
-        reserve: initials.reserve,
-        supply: initials.supply,
-        trr: initials.trr,
-        crr: initials.crr,
-        cicBal: newcicBal,
-        resBal: initials.resBal,
-        cicPurchases: newcicPurchases,
-        cicSales: initials.cicSales,
-        resPurchases: initials.resPurchases,
-        resSales: initials.resSales,
-      });
+      alert('There is not sufficient CIC');
+      return;
     }
+    const newcicPurchases = cicPurchases + cicTxInput;
+    const newcicBal = cicBal - cicTxInput;
+    setInitials({
+      reserve: initials.reserve,
+      supply: initials.supply,
+      trr: initials.trr,
+      crr: initials.crr,
+      cicBal: newcicBal,
+      resBal: initials.resBal,
+      cicPurchases: newcicPurchases,
+      cicSales: initials.cicSales,
+      resPurchases: initials.resPurchases,
+      resSales: initials.resSales,
+    });
   };
 
   const sellCIC = (cicTxInput) => {
     const { supply, cicBal, cicSales } = initials;
-    if (cicBal + cicTxInput <= supply) {
-      //You can't have more than the total supply
-
-      const newcicSales = cicSales + cicTxInput;
-      const newcicBal = cicBal + cicTxInput;
-      setInitials({
-        reserve: initials.reserve,
-        supply: initials.supply,
-        trr: initials.trr,
-        crr: initials.crr,
-        cicBal: newcicBal,
-        resBal: initials.resBal,
-        cicPurchases: initials.cicPurchases,
-        cicSales: newcicSales,
-        resPurchases: initials.resPurchases,
-        resSales: initials.resSales,
-      });
+    if (cicBal + cicTxInput > supply) {
+      alert('There is not enough Supply');
+      return;
     }
+
+    const newcicSales = cicSales + cicTxInput;
+    const newcicBal = cicBal + cicTxInput;
+    setInitials({
+      reserve: initials.reserve,
+      supply: initials.supply,
+      trr: initials.trr,
+      crr: initials.crr,
+      cicBal: newcicBal,
+      resBal: initials.resBal,
+      cicPurchases: initials.cicPurchases,
+      cicSales: newcicSales,
+      resPurchases: initials.resPurchases,
+      resSales: initials.resSales,
+    });
   };
 
   const buyReserve = (resTxInput) => {
     const { resBal, resPurchases } = initials;
-    if (resTxInput <= resBal) {
-      const newresPurchases = resPurchases + resTxInput;
-      const newresBal = resBal - resTxInput;
-      setInitials({
-        reserve: initials.reserve,
-        supply: initials.supply,
-        trr: initials.trr,
-        crr: initials.crr,
-        cicBal: initials.cicBal,
-        resBal: newresBal,
-        cicPurchases: initials.cicPurchases,
-        cicSales: initials.cicSales,
-        resPurchases: newresPurchases,
-        resSales: initials.resSales,
-      });
+    if (resTxInput > resBal) {
+      alert('There is not sufficient Reserve');
+      return;
     }
+    const newresPurchases = resPurchases + resTxInput;
+    const newresBal = resBal - resTxInput;
+    setInitials({
+      reserve: initials.reserve,
+      supply: initials.supply,
+      trr: initials.trr,
+      crr: initials.crr,
+      cicBal: initials.cicBal,
+      resBal: newresBal,
+      cicPurchases: initials.cicPurchases,
+      cicSales: initials.cicSales,
+      resPurchases: newresPurchases,
+      resSales: initials.resSales,
+    });
   };
 
   const sellReserve = (resTxInput) => {
@@ -159,7 +164,11 @@ function App() {
     if (resTxInput > resBal) {
       resTxInput = resBal;
     }
-    if (resTxInput > resBal || resTxInput < 0) {
+    if (resTxInput < 0) {
+      return;
+    }
+    if (resTxInput > resBal) {
+      alert('There is not sufficient Reserve');
       return;
     }
     const newReserve = reserve + resTxInput;
@@ -208,7 +217,7 @@ function App() {
     if (cicTxInput > cicBal) {
       cicTxInput = cicBal;
     }
-    if (cicTxInput >= supply) {
+    if (cicTxInput > supply) {
       cicTxInput = supply * 0.9999;
     }
     const addedReserve = getNewReserveCashOut(reserve, supply, trr, cicTxInput);
