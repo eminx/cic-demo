@@ -9,7 +9,7 @@ const theme = deepMerge(base, {
     },
     colors: {
       brand: '#db2e9c',
-      focus: 'none',
+      focus: 'rgba(0,0,0, .25)',
       complementary: '#419ae8',
       darkgray: '#A9A9A9',
       black: '#000000',
