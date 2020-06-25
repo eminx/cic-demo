@@ -1,3 +1,11 @@
+const getPercent = (value, total) => {
+  const ratio = total > 0 ? value / total : 0;
+
+  return toPercent(ratio, 2);
+};
+
+const toPercent = (decimal, fixed = 0) => `${(decimal * 100).toFixed(fixed)}%`;
+
 const setInitCICBal = (total) => {
     const newBal = total*0.25
     return newBal;
@@ -11,7 +19,7 @@ const setInitResBal = (total) => {
 const getNewSupplyCashIn = (reserve, supply, trr, amount) => {
     if (reserve >0) {
     const newSupply = supply * (Math.pow(1 + amount / reserve, trr) - 1);
-  return Math.round(newSupply);
+	return newSupply;//Math.round(newSupply);
 	}
     else{
 	return 0;
@@ -22,7 +30,7 @@ const getNewSupplyCashIn = (reserve, supply, trr, amount) => {
 const getNewReserveCashOut = (reserve, supply, trr, amount) => {
         if (supply >0) {
     const newReserve = reserve * (Math.pow(1 + (-1 * amount) / supply, 1 / trr) - 1);
-	    return Math.round(newReserve);
+	    return newReserve;//Math.round(newReserve);
 	}
     else{
 	return 0;
@@ -32,7 +40,7 @@ const getNewReserveCashOut = (reserve, supply, trr, amount) => {
 const getPrice = (reserve, supply, trr) => {
     if (supply >0) {
   const price = reserve / (supply * trr);
-	return price.toFixed(2);
+	return price;//.toFixed(2);
     }
     else {
 	return 0;
@@ -42,7 +50,7 @@ const getPrice = (reserve, supply, trr) => {
 const getInvPrice = (reserve, supply, trr) => {
   if (reserve >0) {
   const price =  (supply * trr)/ reserve;
-      return price.toFixed(2);
+      return price;//.toFixed(2);
   }
     else{
 	return 0;
@@ -52,7 +60,7 @@ const getInvPrice = (reserve, supply, trr) => {
 const getCRR = (reserve, supply) => {
     if (supply >0) {
 	const crr = reserve / supply;
-        return crr.toFixed(2);
+        return crr; //.toFixed(2);
     }
     else {
 	return 0;
@@ -122,4 +130,6 @@ export {
   defaultPriceSetItem,
     setInitCICBal,
     setInitResBal,
+    getPercent,
+    toPercent,
 };

@@ -38,7 +38,13 @@ import {
 import { Container, Row, Col, ScreenClassRender } from 'react-grid-system';
 
 import theme from './config/theme';
-import { AppBar, InitialsUI, PlayMonitor, NumberDisplay } from './components';
+import {
+  AppBar,
+  InitialsUI,
+  PlayMonitor,
+  NumberDisplay,
+  TextDisplay,
+} from './components';
 import {
   getNewSupplyCashIn,
   getNewReserveCashOut,
@@ -150,7 +156,10 @@ function App() {
 
   const cashIn = (resAmount) => {
     const { reserve, supply, trr, cicBal, resBal } = initials;
-    if (resAmount <= resBal) {
+    if (resAmount >= resBal) {
+      resAmount = resBal;
+    }
+    if (resAmount <= resBal && resAmount > 0) {
       const newReserve = reserve + resAmount;
       const addedSupply = getNewSupplyCashIn(reserve, supply, trr, resAmount);
       const newSupply = supply + addedSupply;
@@ -172,9 +181,11 @@ function App() {
       setPriceSet([
         ...priceSet,
         {
+          cic: newSupply,
+          res: newReserve,
           trr: trr,
-          crr: getCRR(newReserve, newSupply),
-          price: getPrice(newReserve, newSupply, trr),
+          crr: getCRR(newReserve, newSupply).toFixed(2),
+          price: getPrice(newReserve, newSupply, trr).toFixed(2),
           step: priceSet.length,
         },
       ]);
@@ -183,13 +194,21 @@ function App() {
 
   const getCashOut = (cicAmount) => {
     const { reserve, supply, trr } = initials;
-    const addedReserve = getNewReserveCashOut(reserve, supply, trr, cicAmount);
-    return -1 * addedReserve;
+    const addedReserve =
+      -1 * getNewReserveCashOut(reserve, supply, trr, cicAmount);
+    if (addedReserve < 0) {
+      return 0;
+    }
+    return addedReserve;
   };
 
   const cashOut = (cicAmount) => {
     const { reserve, supply, trr, cicBal, resBal } = initials;
+
     if (cicAmount <= cicBal) {
+      if (cicAmount >= supply) {
+        cicAmount = supply * 0.9999;
+      }
       const addedReserve = getNewReserveCashOut(
         reserve,
         supply,
@@ -217,9 +236,14 @@ function App() {
       setPriceSet([
         ...priceSet,
         {
+          cic: newSupply,
+          res: newReserve,
           trr: trr,
-          crr: getCRR(newReserve, newSupply),
-          price: getPrice(newReserve, newSupply, initials.trr),
+          crr: getCRR(newReserve, newSupply).toFixed(2),
+
+          //trr: trr,
+          //crr: getCRR(newReserve, newSupply),
+          price: getPrice(newReserve, newSupply, initials.trr).toFixed(2),
           step: priceSet.length,
         },
       ]);
@@ -237,9 +261,14 @@ function App() {
     } else {
       setPriceSet([
         {
+          cic: supply,
+          res: reserve,
           trr: trr,
-          crr: getCRR(reserve, supply),
-          price: getPrice(reserve, supply, trr),
+          crr: getCRR(reserve, supply).toFixed(2),
+
+          //trr: trr,
+          //crr: getCRR(reserve, supply),
+          price: getPrice(reserve, supply, trr).toFixed(2),
           step: 0,
         },
       ]);
@@ -330,6 +359,13 @@ function App() {
                           <Row>
                             <Col md={3}>
                               <Box align="start" pad="xsmall" gap="small">
+                                <TextDisplay
+                                  inline
+                                  label="Use CIC"
+                                  color="brand"
+                                  size="small"
+                                />
+
                                 <Box
                                   direction="row"
                                   align="center"
@@ -407,7 +443,10 @@ function App() {
                                     decimals={0}
                                     step={100}
                                     min={0}
-                                    max={initials.cicBal}
+                                    max={Math.min(
+                                      initials.cicBal,
+                                      initials.supply * 0.999
+                                    )}
                                     onChange={({ target: { value } }) =>
                                       setCICAmount(Number(value))
                                     }
@@ -422,19 +461,20 @@ function App() {
                                   />
                                   <NumberDisplay
                                     inline
+                                    value={getCashOut(cicAmount)}
+                                    label="Recieve National Currency: "
+                                    color="complementary"
+                                    size="small"
+                                  />
+
+                                  <NumberDisplay
+                                    inline
                                     value={getPrice(
                                       initials.reserve,
                                       initials.supply,
                                       initials.trr
                                     )}
-                                    label="Rate: "
-                                    color="brand"
-                                    size="small"
-                                  />
-                                  <NumberDisplay
-                                    inline
-                                    value={getCashOut(cicAmount)}
-                                    label="+Reserve: "
+                                    label="@Rate: "
                                     color="brand"
                                     size="small"
                                   />
@@ -444,6 +484,13 @@ function App() {
 
                             <Col md={3}>
                               <Box align="start" pad="xsmall" gap="small">
+                                <TextDisplay
+                                  inline
+                                  label="Use National Currency"
+                                  color="complementary"
+                                  size="small"
+                                />
+
                                 <Box
                                   direction="row"
                                   align="center"
@@ -452,15 +499,15 @@ function App() {
                                   <Button
                                     onClick={() => buyReserve(100)}
                                     color="complementary"
-                                    icon={<Bike />}
+                                    icon={<Book />}
                                     label="Buy 100"
                                     size="xsmall"
                                   />
                                   <Button
-                                    onClick={() => buyReserve(100)}
+                                    onClick={() => buyReserve(500)}
                                     color="complementary"
-                                    icon={<Book />}
-                                    label="Buy 100"
+                                    icon={<Bike />}
+                                    label="Buy 500"
                                     size="xsmall"
                                   />
                                 </Box>
@@ -488,7 +535,7 @@ function App() {
                                 <NumberDisplay
                                   inline
                                   value={initials.resBal}
-                                  label="My Reserve: "
+                                  label="My National Currency: "
                                   align="start"
                                   color="complementary"
                                   size="small"
@@ -539,31 +586,89 @@ function App() {
                                   />
                                   <NumberDisplay
                                     inline
+                                    value={getCashIn(resAmount)}
+                                    label="Create CIC : "
+                                    size="small"
+                                    color="brand"
+                                  />
+
+                                  <NumberDisplay
+                                    inline
                                     value={getInvPrice(
                                       initials.reserve,
                                       initials.supply,
                                       initials.trr
                                     )}
-                                    label="Rate: "
+                                    label="@Rate: "
                                     color="complementary"
                                     size="small"
-                                    align="start"
-                                  />
-                                  <NumberDisplay
-                                    inline
-                                    value={getCashIn(resAmount)}
-                                    label="+CIC : "
-                                    size="small"
-                                    color="complementary"
+                                    align="end"
                                   />
                                 </Box>
                               </Box>
                             </Col>
-                            <Col md={6}>
-                              <ResponsiveContainer height={400}>
+                            <Col lg={6}>
+                              <ResponsiveContainer height={200}>
                                 <ComposedChart
                                   // width="100%"
-                                  height={400}
+                                  height={200}
+                                  data={priceSetWithCicPrices}
+                                  margin={{
+                                    top: 20,
+                                    right: 30,
+                                    left: 0,
+                                    bottom: 0,
+                                  }}
+                                >
+                                  <CartesianGrid strokeDasharray="1 3" />
+                                  <YAxis>
+                                    <Label
+                                      value=""
+                                      offset={0}
+                                      position="insideTopLeft"
+                                    />
+                                  </YAxis>
+
+                                  <Tooltip />
+                                  <Legend />
+                                  {/*<Bar
+                                      name="Reserve Ratio"
+                                      stackId="a"                     
+                                      fill="complementary"
+                                      dataKey="crr"
+                                      barSize={15}
+                                    />
+
+                                  <Area
+                                    name="National Currency Reserve"
+                                    type="natural"
+                                    dataKey="res"
+	                 	    stackID="1"
+                                    stroke={theme.global.colors.complementary}
+                                    strokeWidth={2}
+                                  />
+                                  <Area
+                                    name="Total CIC Supply"
+                                    type="natural"
+                                    dataKey="cic"
+	                 	    stackID="1"
+                                    stroke={theme.global.colors.brand}
+                                    strokeWidth={2}
+                                  />
+				   */}
+                                  <Line
+                                    name="Exchange Rate"
+                                    type="natural"
+                                    dataKey="price"
+                                    stroke={theme.global.colors.brand}
+                                    strokeWidth={2}
+                                  />
+                                </ComposedChart>
+                              </ResponsiveContainer>
+                              <ResponsiveContainer height={200}>
+                                <ComposedChart
+                                  // width="100%"
+                                  height={200}
                                   data={priceSetWithCicPrices}
                                   margin={{
                                     top: 20,
@@ -596,7 +701,7 @@ function App() {
                                       fill="complementary"
                                       dataKey="crr"
                                       barSize={15}
-                                    />*/}
+                                    />
                                   <Line
                                     name="Exchange Rate"
                                     type="natural"
@@ -604,20 +709,37 @@ function App() {
                                     stroke={theme.global.colors.brand}
                                     strokeWidth={2}
                                   />
+
                                   <Area
-                                    name="Reserve Ratio"
+                                    name="National Currency Reserve"
+                                    type="natural"
+                                    dataKey="res"
+	                 	    stackID="1"
+                                    stroke={theme.global.colors.complementary}
+                                    strokeWidth={2}
+                                  />
+                                  <Area
+                                    name="Total CIC Supply"
+                                    type="natural"
+                                    dataKey="cic"
+	                 	    stackID="1"
+                                    stroke={theme.global.colors.brand}
+                                    strokeWidth={2}
+                                  />
+				   */}
+                                  <Area
+                                    name="Current Reserve Ratio"
                                     type="natural"
                                     dataKey="crr"
                                     stroke={theme.global.colors.complementary}
-                                    strokeWidth={2}
+                                    strokeWidth={4}
                                   />
                                   <Line
                                     name="Target Reserve Ratio"
                                     type="natural"
                                     dataKey="trr"
                                     stroke={theme.global.colors.black}
-                                    strokeWidth={4}
-                                    strokeDasharray="3 3"
+                                    strokeWidth={3}
                                   />
                                 </ComposedChart>
                               </ResponsiveContainer>

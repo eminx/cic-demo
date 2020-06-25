@@ -34,9 +34,9 @@ const InitialsUI = ({ initials, setInitial, large }) => {
           align="start"
         />
       </Box>
-      <InitialField
+       <InitialField
         name="reserve"
-        label="Contribute Collateral to Reserve"
+        label="Contribute National Currency Collateral"
         value={reserve}
         onChange={(value) =>
           setInitial({ reserve: value, resBal: setInitResBal(value) })
@@ -75,22 +75,23 @@ const InitialsUI = ({ initials, setInitial, large }) => {
 };
 
 const PlayMonitor = ({ initials }) => {
-  const { reserve, supply, trr } = initials;
+  const { reserve, supply} = initials;
   return (
     <Box size="small" gap="medium" pad="medium">
       <NumberDisplay
         value={reserve}
-        label="Total Reserve"
+        label="National Currency Reserve"
         color="complementary"
         align="start"
       />
 
       <NumberDisplay
         value={supply}
-        label="Total CIC Supply"
+        label="CIC Supply"
         color="brand"
         align="start"
-      />
+	  />
+	  {/*
 
       <NumberDisplay
         value={getCRR(reserve, supply)}
@@ -105,6 +106,7 @@ const PlayMonitor = ({ initials }) => {
         color="dark-3"
         align="start"
       />
+     */}
     </Box>
   );
 };
@@ -167,9 +169,35 @@ const NumberDisplay = ({
       </Text>
     )}
     <Text size={size} color="dark-2">
-      <code>{value}</code>
+      <code>{value.toFixed(2)}</code>
     </Text>
   </Box>
 );
 
-export { AppBar, InitialField, InitialsUI, PlayMonitor, NumberDisplay };
+const TextDisplay = ({
+  align = 'end',
+  color = 'dark-1',
+  label,
+  size = 'xxlarge',
+  alignLabelRight,
+  inline,
+  ...otherProps
+}) => (
+  <Box direction={inline ? 'row' : 'column'} {...otherProps}>
+    {label && (
+      <Text
+        size="small"
+        color={color}
+        style={{
+          textAlign: alignLabelRight ? 'right' : 'left',
+          paddingRight: 4,
+        }}
+      >
+        {label}{' '}
+      </Text>
+    )}
+  </Box>
+);
+
+
+export { AppBar, InitialField, InitialsUI, PlayMonitor, NumberDisplay, TextDisplay };
