@@ -70,7 +70,7 @@ function App() {
 
   const buyCIC = (cicTxInput) => {
     const { cicBal, cicPurchases } = initials;
-    if (cicTxInput <= cicBal) {
+    if (cicTxInput > cicBal) {
       alert('There is not sufficient CIC');
       return;
     }
