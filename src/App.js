@@ -68,11 +68,11 @@ function App() {
     setInitials({ ...initials, ...initial });
   };
 
-  const buyCIC = (cicAmount) => {
+  const buyCIC = (cicTxInput) => {
     const { cicBal, cicPurchases } = initials;
-    if (cicAmount <= cicBal) {
-      const newcicPurchases = cicPurchases + cicAmount;
-      const newcicBal = cicBal - cicAmount;
+    if (cicTxInput <= cicBal) {
+      const newcicPurchases = cicPurchases + cicTxInput;
+      const newcicBal = cicBal - cicTxInput;
       setInitials({
         reserve: initials.reserve,
         supply: initials.supply,
@@ -88,13 +88,13 @@ function App() {
     }
   };
 
-  const sellCIC = (cicAmount) => {
+  const sellCIC = (cicTxInput) => {
     const { supply, cicBal, cicSales } = initials;
-    if (cicBal + cicAmount <= supply) {
+    if (cicBal + cicTxInput <= supply) {
       //You can't have more than the total supply
 
-      const newcicSales = cicSales + cicAmount;
-      const newcicBal = cicBal + cicAmount;
+      const newcicSales = cicSales + cicTxInput;
+      const newcicBal = cicBal + cicTxInput;
       setInitials({
         reserve: initials.reserve,
         supply: initials.supply,
@@ -110,11 +110,11 @@ function App() {
     }
   };
 
-  const buyReserve = (resAmount) => {
+  const buyReserve = (resTxInput) => {
     const { resBal, resPurchases } = initials;
-    if (resAmount <= resBal) {
-      const newresPurchases = resPurchases + resAmount;
-      const newresBal = resBal - resAmount;
+    if (resTxInput <= resBal) {
+      const newresPurchases = resPurchases + resTxInput;
+      const newresBal = resBal - resTxInput;
       setInitials({
         reserve: initials.reserve,
         supply: initials.supply,
@@ -130,10 +130,10 @@ function App() {
     }
   };
 
-  const sellReserve = (resAmount) => {
+  const sellReserve = (resTxInput) => {
     const { resBal, resSales } = initials;
-    const newresSales = resSales + resAmount;
-    const newresBal = resBal + resAmount;
+    const newresSales = resSales + resTxInput;
+    const newresBal = resBal + resTxInput;
     setInitials({
       reserve: initials.reserve,
       supply: initials.supply,
@@ -148,106 +148,102 @@ function App() {
     });
   };
 
-  const getCashIn = (resAmount) => {
+  const getCashIn = (resTxInput) => {
     const { reserve, supply, trr } = initials;
-    const addedSupply = getNewSupplyCashIn(reserve, supply, trr, resAmount);
+    const addedSupply = getNewSupplyCashIn(reserve, supply, trr, resTxInput);
     return addedSupply;
   };
 
-  const cashIn = (resAmount) => {
+  const cashIn = (resTxInput) => {
     const { reserve, supply, trr, cicBal, resBal } = initials;
-    if (resAmount >= resBal) {
-      resAmount = resBal;
+    if (resTxInput > resBal) {
+      resTxInput = resBal;
     }
-    if (resAmount <= resBal && resAmount > 0) {
-      const newReserve = reserve + resAmount;
-      const addedSupply = getNewSupplyCashIn(reserve, supply, trr, resAmount);
-      const newSupply = supply + addedSupply;
-      const newCRR = newReserve / newSupply;
-      const newcicBal = cicBal + addedSupply;
-      const newresBal = Math.round(resBal - resAmount);
-      setInitials({
-        reserve: newReserve,
-        supply: newSupply,
-        trr: initials.trr,
-        crr: newCRR,
-        cicBal: newcicBal,
-        resBal: newresBal,
-        cicPurchases: initials.cicPurchases,
-        cicSales: initials.cicSales,
-        resPurchases: initials.resPurchases,
-        resSales: initials.resSales,
-      });
-      setPriceSet([
-        ...priceSet,
-        {
-          cic: newSupply,
-          res: newReserve,
-          trr: trr,
-          crr: getCRR(newReserve, newSupply).toFixed(2),
-          price: getPrice(newReserve, newSupply, trr).toFixed(2),
-          step: priceSet.length,
-        },
-      ]);
+    if (resTxInput > resBal || resTxInput < 0) {
+      return;
     }
+    const newReserve = reserve + resTxInput;
+    const addedSupply = getNewSupplyCashIn(reserve, supply, trr, resTxInput);
+    const newSupply = supply + addedSupply;
+    const newCRR = newReserve / newSupply;
+    const newcicBal = cicBal + addedSupply;
+    const newresBal = Math.round(resBal - resTxInput);
+    setInitials({
+      reserve: newReserve,
+      supply: newSupply,
+      trr: initials.trr,
+      crr: newCRR,
+      cicBal: newcicBal,
+      resBal: newresBal,
+      cicPurchases: initials.cicPurchases,
+      cicSales: initials.cicSales,
+      resPurchases: initials.resPurchases,
+      resSales: initials.resSales,
+    });
+    setPriceSet([
+      ...priceSet,
+      {
+        cic: newSupply,
+        res: newReserve,
+        trr: trr,
+        crr: getCRR(newReserve, newSupply).toFixed(2),
+        price: getPrice(newReserve, newSupply, trr).toFixed(2),
+        step: priceSet.length,
+      },
+    ]);
   };
 
-  const getCashOut = (cicAmount) => {
+  const getCashOut = (cicTxInput) => {
     const { reserve, supply, trr } = initials;
     const addedReserve =
-      -1 * getNewReserveCashOut(reserve, supply, trr, cicAmount);
+      -1 * getNewReserveCashOut(reserve, supply, trr, cicTxInput);
     if (addedReserve < 0) {
       return 0;
     }
     return addedReserve;
   };
 
-  const cashOut = (cicAmount) => {
+  const cashOut = (cicTxInput) => {
     const { reserve, supply, trr, cicBal, resBal } = initials;
-
-    if (cicAmount <= cicBal) {
-      if (cicAmount >= supply) {
-        cicAmount = supply * 0.9999;
-      }
-      const addedReserve = getNewReserveCashOut(
-        reserve,
-        supply,
-        trr,
-        cicAmount
-      );
-      const newReserve = reserve + addedReserve;
-      const newSupply = supply - cicAmount;
-      const newCRR = newReserve / newSupply;
-      const newcicBal = Math.round(cicBal - cicAmount);
-      const newresBal = resBal - addedReserve;
-
-      setInitials({
-        reserve: newReserve,
-        supply: newSupply,
-        trr: initials.trr,
-        crr: newCRR,
-        cicBal: newcicBal,
-        resBal: newresBal,
-        cicPurchases: initials.cicPurchases,
-        cicSales: initials.cicSales,
-        resPurchases: initials.resPurchases,
-        resSales: initials.resSales,
-      });
-      setPriceSet([
-        ...priceSet,
-        {
-          cic: newSupply,
-          res: newReserve,
-          trr: trr,
-          crr: getCRR(newReserve, newSupply).toFixed(2),
-
-          //trr: trr,
-          //crr: getCRR(newReserve, newSupply),
-          price: getPrice(newReserve, newSupply, initials.trr).toFixed(2),
-          step: priceSet.length,
-        },
-      ]);
+    if (cicTxInput > cicBal) {
+      cicTxInput = cicBal;
     }
+    if (cicTxInput >= supply) {
+      cicTxInput = supply * 0.9999;
+    }
+    const addedReserve = getNewReserveCashOut(reserve, supply, trr, cicTxInput);
+    const newReserve = reserve + addedReserve;
+    const newSupply = supply - cicTxInput;
+    const newCRR = newReserve / newSupply;
+    const newcicBal = Math.round(cicBal - cicTxInput);
+    const newresBal = resBal - addedReserve;
+
+    setInitials({
+      reserve: newReserve,
+      supply: newSupply,
+      trr: initials.trr,
+      crr: newCRR,
+      cicBal: newcicBal,
+      resBal: newresBal,
+      cicPurchases: initials.cicPurchases,
+      cicSales: initials.cicSales,
+      resPurchases: initials.resPurchases,
+      resSales: initials.resSales,
+    });
+    setPriceSet([
+      ...priceSet,
+      {
+        cic: newSupply,
+        res: newReserve,
+        trr: trr,
+        crr: getCRR(newReserve, newSupply).toFixed(2),
+
+        //trr: trr,
+        //crr: getCRR(newReserve, newSupply),
+        price: getPrice(newReserve, newSupply, initials.trr).toFixed(2),
+        step: priceSet.length,
+      },
+    ]);
   };
 
   const changePlayMode = () => {
