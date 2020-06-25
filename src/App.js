@@ -328,7 +328,7 @@ function App() {
                           pad={{ top: 'medium', bottom: 'medium' }}
                         >
                           <Row>
-                            <Col lg={3}>
+                            <Col md={3}>
                               <Box align="start" pad="xsmall" gap="small">
                                 <Box
                                   direction="row"
@@ -442,7 +442,7 @@ function App() {
                               </Box>
                             </Col>
 
-                            <Col lg={3}>
+                            <Col md={3}>
                               <Box align="start" pad="xsmall" gap="small">
                                 <Box
                                   direction="row"
@@ -559,7 +559,7 @@ function App() {
                                 </Box>
                               </Box>
                             </Col>
-                            <Col lg={6}>
+                            <Col md={6}>
                               <ResponsiveContainer height={400}>
                                 <ComposedChart
                                   // width="100%"
