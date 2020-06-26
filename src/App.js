@@ -70,8 +70,24 @@ function App() {
     setInitials({ ...initials, ...initial });
   };
 
+  const getRESTradeBalance = () => {
+    const { resPurchases, resSales } = initials;
+    const tb = resSales - resPurchases;
+    return tb;
+  };
+  const getCICTradeBalance = () => {
+    const { cicPurchases, cicSales } = initials;
+    const tb = cicSales - cicPurchases;
+    return tb;
+  };
+    
   const buyCIC = (txAmount) => {
-    const { cicBal, cicPurchases } = initials;
+      const { cicBal, cicPurchases } = initials;
+      if (txAmount > cicBal) {
+	 alert('Your CIC balance is too low!');
+      return;
+    }
+
     const newcicPurchases = cicPurchases + txAmount;
     const newcicBal = cicBal - txAmount;
     setInitials({
@@ -86,15 +102,17 @@ function App() {
       resPurchases: initials.resPurchases,
       resSales: initials.resSales,
     });
+    
     if (cicExchangeInput > newcicBal) {
       setCicExchangeInput(newcicBal);
     }
+    
   };
 
   const sellCIC = (txAmount) => {
     const { supply, cicBal, cicSales } = initials;
     if (cicBal + txAmount > supply) {
-      alert('There is not enough Supply');
+      alert('There is not enough CIC in Circulation');
       return;
     }
 
@@ -112,10 +130,19 @@ function App() {
       resPurchases: initials.resPurchases,
       resSales: initials.resSales,
     });
+
+      if (cicExchangeInput < Math.min(newcicBal,1000) ) {
+	  setCicExchangeInput(Math.min(Math.floor(newcicBal),1000));
+    }
+
   };
 
   const buyReserve = (txAmount) => {
-    const { resBal, resPurchases } = initials;
+      const { resBal, resPurchases } = initials;
+      if (txAmount > resBal) {
+	 alert('Your National Currency balance is too low!');
+      return;
+    }
     const newresPurchases = resPurchases + txAmount;
     const newresBal = resBal - txAmount;
     setInitials({
@@ -131,8 +158,9 @@ function App() {
       resSales: initials.resSales,
     });
     if (reserveExchangeInput > resBal) {
-      setReserveExchangeInput(resBal);
+	setReserveExchangeInput(Math.floor(resBal));
     }
+    
   };
 
   const sellReserve = (txAmount) => {
@@ -151,6 +179,10 @@ function App() {
       resPurchases: initials.resPurchases,
       resSales: newresSales,
     });
+      if (reserveExchangeInput < Math.min(Math.floor(newresBal),1000) ) {
+	setReserveExchangeInput(Math.min(Math.floor(newresBal),1000));
+    }
+
   };
 
   const getCashIn = () => {
@@ -166,11 +198,12 @@ function App() {
 
   const cashIn = () => {
     const { reserve, supply, trr, cicBal, resBal } = initials;
+    console.log(reserveExchangeInput);
     if (reserveExchangeInput < 0) {
       return;
     }
-    if (reserveExchangeInput > resBal) {
-      alert('There is not sufficient Reserve');
+      if (reserveExchangeInput > resBal) {
+        alert('Not enough National Currency');
       return;
     }
     const newReserve = reserve + reserveExchangeInput;
@@ -183,7 +216,7 @@ function App() {
     const newSupply = supply + addedSupply;
     const newCRR = newReserve / newSupply;
     const newcicBal = cicBal + addedSupply;
-    const newresBal = Math.round(resBal - reserveExchangeInput);
+      const newresBal = resBal - reserveExchangeInput;//Math.round(resBal - reserveExchangeInput);
     setInitials({
       reserve: newReserve,
       supply: newSupply,
@@ -202,14 +235,18 @@ function App() {
         cic: newSupply,
         res: newReserve,
         trr: trr,
-        crr: getCRR(newReserve, newSupply).toFixed(2),
-        price: getPrice(newReserve, newSupply, trr).toFixed(2),
+        crr: getCRR(newReserve, newSupply).toFixed(3),
+        price: getPrice(newReserve, newSupply, trr).toFixed(3),
         step: priceSet.length,
       },
     ]);
     if (reserveExchangeInput > newresBal) {
-      setReserveExchangeInput(newresBal);
+	setReserveExchangeInput(Math.floor(newresBal));
     }
+    if (cicExchangeInput < Math.min(newcicBal,1000) ) {
+	setCicExchangeInput(Math.min(Math.floor(newcicBal),1000));
+    }
+
   };
 
   const getCashOut = () => {
@@ -224,7 +261,12 @@ function App() {
 
   const cashOut = () => {
     const { reserve, supply, trr, cicBal, resBal } = initials;
-    console.log(cicExchangeInput);
+      console.log(cicExchangeInput);
+      if(cicExchangeInput > cicBal){
+	alert('There is not sufficient cicBal');
+      return;
+    }
+
     const addedReserve = getNewReserveCashOut(
       reserve,
       supply,
@@ -234,7 +276,7 @@ function App() {
     const newReserve = reserve + addedReserve;
     const newSupply = supply - cicExchangeInput;
     const newCRR = newReserve / newSupply;
-    const newcicBal = Math.round(cicBal - cicExchangeInput);
+    const newcicBal = cicBal - cicExchangeInput;
     const newresBal = resBal - addedReserve;
 
     setInitials({
@@ -255,20 +297,21 @@ function App() {
         cic: newSupply,
         res: newReserve,
         trr: trr,
-        crr: getCRR(newReserve, newSupply).toFixed(2),
-
-        //trr: trr,
-        //crr: getCRR(newReserve, newSupply),
-        price: getPrice(newReserve, newSupply, initials.trr).toFixed(2),
+        crr: getCRR(newReserve, newSupply).toFixed(3),
+        price: getPrice(newReserve, newSupply, initials.trr).toFixed(3),
         step: priceSet.length,
       },
     ]);
     if (cicExchangeInput > newcicBal) {
-      setCicExchangeInput(newcicBal);
+	setCicExchangeInput(Math.floor(newcicBal));
     }
     if (cicExchangeInput > newSupply) {
-      setCicExchangeInput(newSupply * 0.9999);
+	setCicExchangeInput(Math.floor(newSupply * 0.9999));
     }
+      if (reserveExchangeInput < Math.min(Math.floor(newresBal),1000) ) {
+	  setReserveExchangeInput(Math.min(Math.floor(newresBal),1000));
+    }
+      
   };
 
   const changePlayMode = () => {
@@ -285,11 +328,8 @@ function App() {
           cic: supply,
           res: reserve,
           trr: trr,
-          crr: getCRR(reserve, supply).toFixed(2),
-
-          //trr: trr,
-          //crr: getCRR(reserve, supply),
-          price: getPrice(reserve, supply, trr).toFixed(2),
+          crr: getCRR(reserve, supply).toFixed(3),
+          price: getPrice(reserve, supply, trr).toFixed(3),
           step: 0,
         },
       ]);
@@ -302,8 +342,8 @@ function App() {
 
   const priceSetWithCicPrices = priceSet.map((item) => ({
     ...item,
-    cicPrice: (1 / item.price).toFixed(2),
-    priceDifference: (1 / item.price - item.price).toFixed(2),
+    cicPrice: (1 / item.price).toFixed(3),
+    priceDifference: (1 / item.price - item.price).toFixed(3),
   }));
 
   return (
@@ -437,6 +477,12 @@ function App() {
                                   size="small"
                                 />
 
+			        <Box
+                                  direction="row"
+                                  align="center"
+                                  gap="xsmall"
+                                >
+
                                 <NumberDisplay
                                   inline
                                   value={initials.cicPurchases}
@@ -452,7 +498,17 @@ function App() {
                                   color="brand"
                                   align="start"
                                   size="small"
-                                />
+                            />
+			    </Box>
+			    <NumberDisplay
+                                  inline
+                                  value={getCICTradeBalance()}
+                                  label="Trade Balance: "
+                                  color="brand"
+                                  align="start"
+                                  size="small"
+                            />
+
                                 <Box
                                   pad={{ top: 'medium', bottom: 'large' }}
                                   gap="small"
@@ -464,10 +520,10 @@ function App() {
                                     decimals={0}
                                     step={100}
                                     min={0}
-                                    max={Math.min(
+                        max={Math.floor(Math.min(
                                       initials.cicBal,
                                       initials.supply * 0.999
-                                    )}
+                        ))}
                                     onChange={({ target: { value } }) =>
                                       setCicExchangeInput(Number(value))
                                     }
@@ -563,6 +619,11 @@ function App() {
                                   color="complementary"
                                   size="small"
                                 />
+			        <Box
+                                  direction="row"
+                                  align="center"
+                                  gap="xsmall"
+                                >
 
                                 <NumberDisplay
                                   inline
@@ -580,7 +641,17 @@ function App() {
                                   color="complementary"
                                   align="start"
                                   size="small"
-                                />
+                            />
+			    </Box>
+			    <NumberDisplay
+                                  inline
+                                  value={getRESTradeBalance()}
+                                  label="Trade Balance: "
+                                  color="complementary"
+                                  align="start"
+                                  size="small"
+                            />
+
                                 <Box
                                   pad={{ top: 'medium', bottom: 'large' }}
                                   gap="small"
@@ -592,7 +663,7 @@ function App() {
                                     decimals={0}
                                     step={100}
                                     min={0}
-                                    max={initials.resBal}
+                                    max={Math.floor(initials.resBal)}
                                     onChange={({ target: { value } }) =>
                                       setReserveExchangeInput(Number(value))
                                     }
