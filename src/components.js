@@ -41,7 +41,7 @@ const InitialsUI = ({ initials, setInitial, large }) => {
         onChange={(value) =>
           setInitial({ reserve: value, resBal: setInitResBal(value) })
         }
-        step={10}
+        step={100}
         min={0}
         max={1000000}
         large={large}
@@ -53,7 +53,7 @@ const InitialsUI = ({ initials, setInitial, large }) => {
         onChange={(value) =>
           setInitial({ supply: value, cicBal: setInitCICBal(value) })
         }
-        step={10}
+        step={100}
         min={0}
         max={1000000}
         large={large}
