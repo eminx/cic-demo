@@ -197,7 +197,7 @@ function App() {
   };
 
   const cashIn = () => {
-    const { reserve, supply, trr, cicBal, resBal } = initials;
+      const { reserve, supply, trr, cicBal, resBal, resPurchases, cicSales } = initials;
     console.log(reserveExchangeInput);
     if (reserveExchangeInput < 0) {
       return;
@@ -213,6 +213,10 @@ function App() {
       trr,
       reserveExchangeInput
     );
+
+    const newcicSales = cicSales + addedSupply;
+    const newresPurchases = resPurchases + reserveExchangeInput;
+
     const newSupply = supply + addedSupply;
     const newCRR = newReserve / newSupply;
     const newcicBal = cicBal + addedSupply;
@@ -225,8 +229,8 @@ function App() {
       cicBal: newcicBal,
       resBal: newresBal,
       cicPurchases: initials.cicPurchases,
-      cicSales: initials.cicSales,
-      resPurchases: initials.resPurchases,
+      cicSales: newcicSales,
+      resPurchases: newresPurchases,
       resSales: initials.resSales,
     });
     setPriceSet([
@@ -260,7 +264,7 @@ function App() {
   };
 
   const cashOut = () => {
-    const { reserve, supply, trr, cicBal, resBal } = initials;
+      const { reserve, supply, trr, cicBal, resBal, cicPurchases, resSales } = initials;
       console.log(cicExchangeInput);
       if(cicExchangeInput > cicBal){
 	alert('There is not sufficient cicBal');
@@ -273,6 +277,8 @@ function App() {
       trr,
       cicExchangeInput
     );
+    const newresSales = resSales - addedReserve;
+    const newcicPurchases = cicPurchases + cicExchangeInput;
     const newReserve = reserve + addedReserve;
     const newSupply = supply - cicExchangeInput;
     const newCRR = newReserve / newSupply;
@@ -286,10 +292,10 @@ function App() {
       crr: newCRR,
       cicBal: newcicBal,
       resBal: newresBal,
-      cicPurchases: initials.cicPurchases,
+      cicPurchases: newcicPurchases,
       cicSales: initials.cicSales,
       resPurchases: initials.resPurchases,
-      resSales: initials.resSales,
+      resSales: newresSales,
     });
     setPriceSet([
       ...priceSet,
