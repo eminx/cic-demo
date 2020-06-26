@@ -127,8 +127,9 @@ const InitialField = ({
             size="large"
             value={value.toString()}
             decimals={0}
-            onInput={({ target: { value } }) => onChange(Number(value))}
+            onChange={({ target: { value } }) => onChange(Number(value))}
             {...otherProps}
+            onInput={() => null}
           />
         </Box>
         {large && (

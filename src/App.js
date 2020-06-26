@@ -452,9 +452,10 @@ function App() {
                                       initials.cicBal,
                                       initials.supply * 0.999
                                     )}
-                                    onInput={({ target: { value } }) =>
+                                    onChange={({ target: { value } }) =>
                                       setCICAmount(Number(value))
                                     }
+                                    onInput={() => null}
                                   />
                                   <Button
                                     primary
@@ -575,9 +576,10 @@ function App() {
                                     step={100}
                                     min={0}
                                     max={initials.resBal}
-                                    onInput={({ target: { value } }) =>
+                                    onChange={({ target: { value } }) =>
                                       setResAmount(Number(value))
                                     }
+                                    onInput={() => null}
                                   />
 
                                   <Button
