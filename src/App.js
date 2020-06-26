@@ -60,22 +60,20 @@ import {
 function App() {
   const [initials, setInitials] = useState(defaultInitials);
   const [playMode, setPlayMode] = useState(false);
-  const [cicAmount, setCICAmount] = useState(defaultCICAmount);
-  const [resAmount, setResAmount] = useState(defaultResAmount);
+  const [cicExchangeInput, setCicExchangeInput] = useState(defaultCICAmount);
+  const [reserveExchangeInput, setReserveExchangeInput] = useState(
+    defaultResAmount
+  );
   const [priceSet, setPriceSet] = useState([defaultPriceSetItem]);
 
   const setInitial = (initial) => {
     setInitials({ ...initials, ...initial });
   };
 
-  const buyCIC = (cicTxInput) => {
+  const buyCIC = () => {
     const { cicBal, cicPurchases } = initials;
-    if (cicTxInput > cicBal) {
-      alert('There is not sufficient CIC');
-      return;
-    }
-    const newcicPurchases = cicPurchases + cicTxInput;
-    const newcicBal = cicBal - cicTxInput;
+    const newcicPurchases = cicPurchases + cicExchangeInput;
+    const newcicBal = cicBal - cicExchangeInput;
     setInitials({
       reserve: initials.reserve,
       supply: initials.supply,
@@ -88,17 +86,20 @@ function App() {
       resPurchases: initials.resPurchases,
       resSales: initials.resSales,
     });
+    if (cicExchangeInput > newcicBal) {
+      setCicExchangeInput(newcicBal);
+    }
   };
 
-  const sellCIC = (cicTxInput) => {
+  const sellCIC = () => {
     const { supply, cicBal, cicSales } = initials;
-    if (cicBal + cicTxInput > supply) {
+    if (cicBal + cicExchangeInput > supply) {
       alert('There is not enough Supply');
       return;
     }
 
-    const newcicSales = cicSales + cicTxInput;
-    const newcicBal = cicBal + cicTxInput;
+    const newcicSales = cicSales + cicExchangeInput;
+    const newcicBal = cicBal + cicExchangeInput;
     setInitials({
       reserve: initials.reserve,
       supply: initials.supply,
@@ -113,14 +114,10 @@ function App() {
     });
   };
 
-  const buyReserve = (resTxInput) => {
+  const buyReserve = () => {
     const { resBal, resPurchases } = initials;
-    if (resTxInput > resBal) {
-      alert('There is not sufficient Reserve');
-      return;
-    }
-    const newresPurchases = resPurchases + resTxInput;
-    const newresBal = resBal - resTxInput;
+    const newresPurchases = resPurchases + reserveExchangeInput;
+    const newresBal = resBal - reserveExchangeInput;
     setInitials({
       reserve: initials.reserve,
       supply: initials.supply,
@@ -133,12 +130,15 @@ function App() {
       resPurchases: newresPurchases,
       resSales: initials.resSales,
     });
+    if (reserveExchangeInput > resBal) {
+      setReserveExchangeInput(resBal);
+    }
   };
 
-  const sellReserve = (resTxInput) => {
+  const sellReserve = () => {
     const { resBal, resSales } = initials;
-    const newresSales = resSales + resTxInput;
-    const newresBal = resBal + resTxInput;
+    const newresSales = resSales + reserveExchangeInput;
+    const newresBal = resBal + reserveExchangeInput;
     setInitials({
       reserve: initials.reserve,
       supply: initials.supply,
@@ -153,30 +153,37 @@ function App() {
     });
   };
 
-  const getCashIn = (resTxInput) => {
+  const getCashIn = () => {
     const { reserve, supply, trr } = initials;
-    const addedSupply = getNewSupplyCashIn(reserve, supply, trr, resTxInput);
+    const addedSupply = getNewSupplyCashIn(
+      reserve,
+      supply,
+      trr,
+      reserveExchangeInput
+    );
     return addedSupply;
   };
 
-  const cashIn = (resTxInput) => {
+  const cashIn = () => {
     const { reserve, supply, trr, cicBal, resBal } = initials;
-    if (resTxInput > resBal) {
-      resTxInput = resBal;
-    }
-    if (resTxInput < 0) {
+    if (reserveExchangeInput < 0) {
       return;
     }
-    if (resTxInput > resBal) {
+    if (reserveExchangeInput > resBal) {
       alert('There is not sufficient Reserve');
       return;
     }
-    const newReserve = reserve + resTxInput;
-    const addedSupply = getNewSupplyCashIn(reserve, supply, trr, resTxInput);
+    const newReserve = reserve + reserveExchangeInput;
+    const addedSupply = getNewSupplyCashIn(
+      reserve,
+      supply,
+      trr,
+      reserveExchangeInput
+    );
     const newSupply = supply + addedSupply;
     const newCRR = newReserve / newSupply;
     const newcicBal = cicBal + addedSupply;
-    const newresBal = Math.round(resBal - resTxInput);
+    const newresBal = Math.round(resBal - reserveExchangeInput);
     setInitials({
       reserve: newReserve,
       supply: newSupply,
@@ -200,31 +207,34 @@ function App() {
         step: priceSet.length,
       },
     ]);
+    if (reserveExchangeInput > newresBal) {
+      setReserveExchangeInput(newresBal);
+    }
   };
 
-  const getCashOut = (cicTxInput) => {
+  const getCashOut = () => {
     const { reserve, supply, trr } = initials;
     const addedReserve =
-      -1 * getNewReserveCashOut(reserve, supply, trr, cicTxInput);
+      -1 * getNewReserveCashOut(reserve, supply, trr, cicExchangeInput);
     if (addedReserve < 0) {
       return 0;
     }
     return addedReserve;
   };
 
-  const cashOut = (cicTxInput) => {
+  const cashOut = () => {
     const { reserve, supply, trr, cicBal, resBal } = initials;
-    if (cicTxInput > cicBal) {
-      cicTxInput = cicBal;
-    }
-    if (cicTxInput > supply) {
-      cicTxInput = supply * 0.9999;
-    }
-    const addedReserve = getNewReserveCashOut(reserve, supply, trr, cicTxInput);
+    console.log(cicExchangeInput);
+    const addedReserve = getNewReserveCashOut(
+      reserve,
+      supply,
+      trr,
+      cicExchangeInput
+    );
     const newReserve = reserve + addedReserve;
-    const newSupply = supply - cicTxInput;
+    const newSupply = supply - cicExchangeInput;
     const newCRR = newReserve / newSupply;
-    const newcicBal = Math.round(cicBal - cicTxInput);
+    const newcicBal = Math.round(cicBal - cicExchangeInput);
     const newresBal = resBal - addedReserve;
 
     setInitials({
@@ -253,6 +263,12 @@ function App() {
         step: priceSet.length,
       },
     ]);
+    if (cicExchangeInput > newcicBal) {
+      setCicExchangeInput(newcicBal);
+    }
+    if (cicExchangeInput > newSupply) {
+      setCicExchangeInput(newSupply * 0.9999);
+    }
   };
 
   const changePlayMode = () => {
@@ -261,8 +277,8 @@ function App() {
       setPlayMode(false);
       setInitials(defaultInitials);
       setPriceSet([defaultPriceSetItem]);
-      setCICAmount(defaultCICAmount);
-      setResAmount(defaultResAmount);
+      setCicExchangeInput(defaultCICAmount);
+      setReserveExchangeInput(defaultResAmount);
     } else {
       setPriceSet([
         {
@@ -444,7 +460,7 @@ function App() {
                                   <NumberInput
                                     size="small"
                                     width="small"
-                                    value={cicAmount.toString()}
+                                    value={cicExchangeInput.toString()}
                                     decimals={0}
                                     step={100}
                                     min={0}
@@ -453,21 +469,22 @@ function App() {
                                       initials.supply * 0.999
                                     )}
                                     onChange={({ target: { value } }) =>
-                                      setCICAmount(Number(value))
+                                      setCicExchangeInput(Number(value))
                                     }
                                     onInput={() => null}
                                   />
                                   <Button
                                     primary
-                                    onClick={() => cashOut(cicAmount)}
+                                    onClick={() => cashOut()}
                                     color="brand"
                                     icon={<Atm />}
                                     label="Redeem CIC"
                                     size="xsmall"
+                                    disabled={cicExchangeInput <= 0}
                                   />
                                   <NumberDisplay
                                     inline
-                                    value={getCashOut(cicAmount)}
+                                    value={getCashOut()}
                                     label="Recieve National Currency: "
                                     color="complementary"
                                     size="small"
@@ -571,29 +588,30 @@ function App() {
                                   <NumberInput
                                     size="small"
                                     width="small"
-                                    value={resAmount.toString()}
+                                    value={reserveExchangeInput.toString()}
                                     decimals={0}
                                     step={100}
                                     min={0}
                                     max={initials.resBal}
                                     onChange={({ target: { value } }) =>
-                                      setResAmount(Number(value))
+                                      setReserveExchangeInput(Number(value))
                                     }
                                     onInput={() => null}
                                   />
 
                                   <Button
                                     primary
-                                    onClick={() => cashIn(resAmount)}
+                                    onClick={() => cashIn()}
                                     color="complementary"
                                     icon={<Money color="white" />}
                                     label="Contribute Reserve"
                                     size="xsmall"
                                     style={{ color: 'white' }}
+                                    disabled={reserveExchangeInput <= 0}
                                   />
                                   <NumberDisplay
                                     inline
-                                    value={getCashIn(resAmount)}
+                                    value={getCashIn()}
                                     label="Create CIC : "
                                     size="small"
                                     color="brand"
