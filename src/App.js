@@ -70,10 +70,10 @@ function App() {
     setInitials({ ...initials, ...initial });
   };
 
-  const buyCIC = () => {
+  const buyCIC = (txAmount) => {
     const { cicBal, cicPurchases } = initials;
-    const newcicPurchases = cicPurchases + cicExchangeInput;
-    const newcicBal = cicBal - cicExchangeInput;
+    const newcicPurchases = cicPurchases + txAmount;
+    const newcicBal = cicBal - txAmount;
     setInitials({
       reserve: initials.reserve,
       supply: initials.supply,
@@ -91,15 +91,15 @@ function App() {
     }
   };
 
-  const sellCIC = () => {
+  const sellCIC = (txAmount) => {
     const { supply, cicBal, cicSales } = initials;
-    if (cicBal + cicExchangeInput > supply) {
+    if (cicBal + txAmount > supply) {
       alert('There is not enough Supply');
       return;
     }
 
-    const newcicSales = cicSales + cicExchangeInput;
-    const newcicBal = cicBal + cicExchangeInput;
+    const newcicSales = cicSales + txAmount;
+    const newcicBal = cicBal + txAmount;
     setInitials({
       reserve: initials.reserve,
       supply: initials.supply,
@@ -114,10 +114,10 @@ function App() {
     });
   };
 
-  const buyReserve = () => {
+  const buyReserve = (txAmount) => {
     const { resBal, resPurchases } = initials;
-    const newresPurchases = resPurchases + reserveExchangeInput;
-    const newresBal = resBal - reserveExchangeInput;
+    const newresPurchases = resPurchases + txAmount;
+    const newresBal = resBal - txAmount;
     setInitials({
       reserve: initials.reserve,
       supply: initials.supply,
@@ -135,10 +135,10 @@ function App() {
     }
   };
 
-  const sellReserve = () => {
+  const sellReserve = (txAmount) => {
     const { resBal, resSales } = initials;
-    const newresSales = resSales + reserveExchangeInput;
-    const newresBal = resBal + reserveExchangeInput;
+    const newresSales = resSales + txAmount;
+    const newresBal = resBal + txAmount;
     setInitials({
       reserve: initials.reserve,
       supply: initials.supply,
