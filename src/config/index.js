@@ -11,6 +11,11 @@ const setInitCICBal = (total) => {
     return newBal;
 };
 
+const setInitComBal = (total) => {
+    const newComBal = total*0.25
+    return newComBal;
+};
+
 const setInitResBal = (total) => {
     const newBal = total*0.1
     return newBal;
@@ -80,8 +85,10 @@ const getCRR = (reserve, supply) => {
 const defaultInitials = {
   reserve: 100000,
   supply: 400000,
+  commitments: 400000,
   trr: 0.25,
   crr: 0.25,
+  comBal: 20000,
   cicBal: 20000,
   resBal: 20000,
   cicPurchases: 0,
@@ -93,8 +100,10 @@ const defaultInitials = {
 const currentInitials = {
   reserve: 100000,
   supply: 400000,
+  commitments: 400000,
   trr: 0.25,
   crr: 0.25,
+  comBal: 10000,
   cicBal: 10000,
   resBal: 10000,
   cicPurchases: 0,
@@ -130,6 +139,7 @@ export {
   defaultPriceSetItem,
     setInitCICBal,
     setInitResBal,
+    setInitComBal,
     getPercent,
     toPercent,
 };

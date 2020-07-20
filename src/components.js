@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Text, FormField, RangeInput } from 'grommet';
 import { NumberInput } from 'grommet-controls';
-import { setInitCICBal, setInitResBal, getPrice, getCRR } from './config';
+import { setInitCICBal, setInitResBal, setInitComBal, getPrice, getCRR } from './config';
 
 const AppBar = (props) => (
   <Box
@@ -16,7 +16,7 @@ const AppBar = (props) => (
 );
 
 const InitialsUI = ({ initials, setInitial, large }) => {
-  const { reserve, supply, trr } = initials;
+    const { reserve, supply, trr , commitments} = initials;
 
   return (
     <Box size="large">
@@ -34,6 +34,19 @@ const InitialsUI = ({ initials, setInitial, large }) => {
           align="start"
         />
       </Box>
+      <InitialField
+        name="commitments"
+        label="Contribute commitments to accepting CIC"
+        value={commitments}
+        onChange={(value) =>
+          setInitial({ commitments: value, comBal: setInitComBal(value) })
+        }
+        step={100}
+        min={0}
+        max={1000000}
+        large={large}
+      />
+
       <InitialField
         name="reserve"
         label="Contribute National Currency Collateral"
@@ -55,7 +68,7 @@ const InitialsUI = ({ initials, setInitial, large }) => {
         }
         step={100}
         min={0}
-        max={1000000}
+        max={Math.min(reserve*4,commitments)}
         large={large}
       />
 
@@ -75,7 +88,7 @@ const InitialsUI = ({ initials, setInitial, large }) => {
 };
 
 const PlayMonitor = ({ initials }) => {
-  const { reserve, supply } = initials;
+    const { reserve, supply, commitments } = initials;
   return (
     <Box size="small" gap="medium" pad="medium">
       <NumberDisplay
