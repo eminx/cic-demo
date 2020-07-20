@@ -32,7 +32,19 @@ const InitialsUI = ({ initials, setInitial, large }) => {
           label="Exchange Rate"
           color="dark-1"
           align="start"
-        />
+          />
+	        <InitialField
+        name="trr"
+        label="Target Reserve Ratio"
+        value={trr}
+        onChange={(value) => setInitial({ trr: value })}
+        step={0.05}
+        min={0.01}
+        max={1}
+        decimals={2}
+        large={large}
+      />
+
       </Box>
       <InitialField
         name="commitments"
@@ -68,21 +80,10 @@ const InitialsUI = ({ initials, setInitial, large }) => {
         }
         step={100}
         min={0}
-        max={Math.min(reserve*4,commitments)}
+      max={Math.min(Math.round(reserve*(1/trr)),commitments)}
         large={large}
       />
 
-      <InitialField
-        name="trr"
-        label="Target Reserve Ratio"
-        value={trr}
-        onChange={(value) => setInitial({ trr: value })}
-        step={0.05}
-        min={0.01}
-        max={1}
-        decimals={2}
-        large={large}
-      />
     </Box>
   );
 };
