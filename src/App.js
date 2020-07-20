@@ -428,7 +428,7 @@ function App() {
                               <Box align="start" pad="xsmall" gap="small">
                                 <TextDisplay
                                   inline
-                                  label="Use CIC"
+                                  label="Buy CIC-committed goods and services"
                                   color="brand"
                                   size="small"
                                 />
@@ -453,6 +453,14 @@ function App() {
                                     size="xsmall"
                                   />
                                 </Box>
+
+			        <TextDisplay
+                                    inline
+			            label="Sell CIC-committed goods and services"
+                                  color="brand"
+                                  size="small"
+                                />
+
 
                                 <Box
                                   direction="row"
@@ -571,7 +579,7 @@ function App() {
                               <Box align="start" pad="xsmall" gap="small">
                                 <TextDisplay
                                   inline
-                                  label="Use National Currency"
+                                  label="Buy with National Currency"
                                   color="complementary"
                                   size="small"
                                 />
@@ -595,7 +603,16 @@ function App() {
                                     label="Buy 500"
                                     size="xsmall"
                                   />
-                                </Box>
+                            </Box>
+
+			       <TextDisplay
+                                  inline
+                                  label="Sell with National Currency"
+                                  color="complementary"
+                                  size="small"
+                                />
+
+
                                 <Box
                                   direction="row"
                                   align="center"

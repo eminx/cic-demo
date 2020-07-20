@@ -48,7 +48,7 @@ const InitialsUI = ({ initials, setInitial, large }) => {
       </Box>
       <InitialField
         name="commitments"
-        label="Contribute commitments to accepting CIC"
+        label="Contribute commitments to accepting CIC for goods or services"
         value={commitments}
         onChange={(value) =>
           setInitial({ commitments: value, comBal: setInitComBal(value) })
@@ -73,7 +73,7 @@ const InitialsUI = ({ initials, setInitial, large }) => {
       />
       <InitialField
         name="supply"
-        label="Create a supply of CIC Tokens"
+        label="Create CIC tokens"
         value={supply}
         onChange={(value) =>
           setInitial({ supply: value, cicBal: setInitCICBal(value) })
@@ -101,7 +101,7 @@ const PlayMonitor = ({ initials }) => {
 
       <NumberDisplay
         value={supply}
-        label="CIC Supply"
+        label="Total CIC Supply"
         color="brand"
         align="start"
       />
