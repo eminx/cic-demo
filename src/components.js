@@ -48,7 +48,7 @@ const InitialsUI = ({ initials, setInitial, large }) => {
       <Box direction="row" align="center" justify="center" gap="medium" pad="medium">
         <NumberDisplay
           value={supply}
-          label="Number of CIC tokens Created"
+          label="Supply of CIC tokens Created: min(collateral/TRR,commitments)"
           color="dark-1"
           align="start"
           />
@@ -63,7 +63,7 @@ const InitialsUI = ({ initials, setInitial, large }) => {
 
         <NumberDisplay
           value={getPrice(reserve, supply, trr)}
-          label="Starting CIC -> Collateral Exchange Rate"
+          label="Starting CIC -> Collateral Exchange Rate: P=Collateral/(TRR*Supply)"
           color="dark-1"
           align="start"
           />
@@ -99,9 +99,9 @@ const InitialsUI = ({ initials, setInitial, large }) => {
 	   */}
 	  <InitialField
         name="trr"
-      label="Target Collateral to CIC Ratio"
+      label="Target Collateral to CIC Ratio (TRR)"
         value={trr}
-        onChange={(value) => setInitial({ trr: value })}
+      onChange={(value) => setInitial({ trr: value ,supply: Math.min(Math.round(reserve*(1/value)),commitments*corr), cicBal: setInitCICBal(Math.min(Math.round(reserve*(1/value)),commitments*corr))})}
         step={0.05}
         min={0.01}
         max={1.1}
