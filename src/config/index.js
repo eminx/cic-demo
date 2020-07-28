@@ -87,7 +87,8 @@ const defaultInitials = {
   supply: 400000,
   commitments: 400000,
   trr: 0.25,
-  crr: 0.25,
+  crr: 0.25, //current reserve ratio
+  corr: 1.0, //commitment reserve ratio
   comBal: 20000,
   cicBal: 20000,
   resBal: 20000,
@@ -103,6 +104,7 @@ const currentInitials = {
   commitments: 400000,
   trr: 0.25,
   crr: 0.25,
+  corr: 1.0, //commitment reserve ratio
   comBal: 10000,
   cicBal: 10000,
   resBal: 10000,
