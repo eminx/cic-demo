@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Anchor,
   Paragraph,
@@ -36,6 +36,9 @@ import {
   Grow,
 } from 'grommet-icons';
 import { Container, Row, Col, ScreenClassRender } from 'react-grid-system';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 import theme from './config/theme';
 import {
@@ -44,6 +47,7 @@ import {
   PlayMonitor,
   NumberDisplay,
   TextDisplay,
+  HeroSlide,
 } from './components';
 import {
   getNewSupplyCashIn,
@@ -57,6 +61,27 @@ import {
   defaultPriceSetItem,
 } from './config';
 
+const introSlides = [
+  {
+    title: 'Virtualise your library',
+    subtitle:
+      'Put up your books to see and plan what to read. let others see what you have',
+    color: 'info',
+  },
+  {
+    title: 'Inspire and Discover Books',
+    subtitle:
+      'Get to see the books people have in short distance to you and borrow. Discover new books',
+    color: 'primary',
+  },
+  {
+    title: 'Let People Read More',
+    subtitle:
+      'Get borrow requests from interesting readers in your city, become a librarian',
+    color: 'success',
+  },
+];
+
 function App() {
   const [initials, setInitials] = useState(defaultInitials);
   const [playMode, setPlayMode] = useState(false);
@@ -65,6 +90,7 @@ function App() {
     defaultResAmount
   );
   const [priceSet, setPriceSet] = useState([defaultPriceSetItem]);
+  const [step, setStep] = useState(0);
 
   const setInitial = (initial) => {
     setInitials({ ...initials, ...initial });
@@ -361,6 +387,35 @@ function App() {
     cicPrice: (1 / item.price).toFixed(3),
     priceDifference: (1 / item.price - item.price).toFixed(3),
   }));
+
+  const slider = useRef(null);
+
+  return (
+    <Slider
+      ref={slider}
+      // arrows={![0, 1, 2].includes(carouselIndex)}
+      // dots={![0, 1, 2].includes(carouselIndex)}
+      afterChange={(index) => setStep(index)}
+      // swipe={!this.isSliderDisabled()}
+      infinite={false}
+      adaptiveHeight
+      initialSlide={0}
+      className="custom-slider"
+    >
+      {introSlides.map((slide) => (
+        <HeroSlide
+          key={slide.title}
+          isColor={slide.color}
+          title={slide.title}
+          subtitle={slide.subtitle}
+          // goNext={slider.slickNext()}
+        />
+      ))}
+      <HeroSlide>Emiiin</HeroSlide>
+      <HeroSlide>Emiiin guzum</HeroSlide>
+      <HeroSlide>Emiiin at</HeroSlide>
+    </Slider>
+  );
 
   return (
     <Grommet theme={theme}>
