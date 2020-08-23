@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box } from 'grommet';
-import { NumberDisplay } from 'grommet-controls';
+import { NumberDisplay } from './';
 
 export default function PlayMonitor({ initials }) {
   const { reserve, supply } = initials;

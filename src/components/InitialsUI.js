@@ -1,7 +1,14 @@
 import React from 'react';
 import { Box } from 'grommet';
-import { NumberDisplay } from 'grommet-controls';
-import InitialField from './InitialField';
+
+import { NumberDisplay, InitialField } from './';
+import {
+  getPrice,
+  getCRR,
+  setInitComBal,
+  setInitCICBal,
+  setInitResBal,
+} from '../config';
 
 export default function InitialsUI({ initials, setInitial, large }) {
   const { reserve, supply, trr, corr, commitments } = initials;

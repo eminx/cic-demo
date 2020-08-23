@@ -42,5 +42,3 @@ export default function HeroSlide({
     </Hero>
   );
 }
-
-export default HeroSlide;

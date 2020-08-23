@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, FormField, RangeInput, Text } from 'grommet';
+import { Box, FormField, RangeInput } from 'grommet';
 import { NumberInput } from 'grommet-controls';
 
 export default function InitialField({
