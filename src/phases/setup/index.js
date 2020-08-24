@@ -1,11 +1,22 @@
 import React, { useState } from 'react';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+  useLocation,
+  useParams,
+} from 'react-router-dom';
 import { Box, Select, TextInput, RangeInput } from 'grommet';
 import { NumberInput } from 'grommet-controls';
 import { Title, Heading, Field, Label, Control, Input } from 'bloomer';
 
+import HeroSlide from '../../components/HeroSlide';
 import { useInitialsContext } from '../../App2';
 import nationalCurrenciesJSON from '../../config/national-currencies.json';
-import InitialField from '../../components/InitialField';
+import setupContent from './content';
 
 const nationalCurrencies = [];
 
@@ -15,6 +26,40 @@ for (let value in nationalCurrenciesJSON) {
     label,
     value,
   });
+}
+
+export default function Setup() {
+  let location = useLocation();
+
+  return (
+    <div>
+      <TransitionGroup>
+        <CSSTransition key={location.key} classNames="fade" timeout={300}>
+          <Switch location={location}>
+            {setupContent.map((item, index) => (
+              <Route
+                key={item.title}
+                path={item.path}
+                children={
+                  <HeroSlide
+                    item={item}
+                    goNext={
+                      setupContent[index + 1] && setupContent[index + 1].path
+                    }
+                    goPrev={
+                      setupContent[index - 1] && setupContent[index - 1].path
+                    }
+                    navmenu={setupContent}
+                  ></HeroSlide>
+                }
+              />
+            ))}
+          </Switch>
+        </CSSTransition>
+      </TransitionGroup>
+      <Redirect to="/setup/intro" />;
+    </div>
+  );
 }
 
 export function SetupIntro() {
@@ -53,7 +98,7 @@ export function SetupInitials() {
               setInitial({
                 cicName: {
                   label: initials.cicName.label,
-                  value: event.target.value,
+                  value: event.target.value.toUpperCase(),
                 },
               })
             }

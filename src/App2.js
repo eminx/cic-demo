@@ -37,7 +37,9 @@ import {
   defaultPriceSetItem,
 } from './config';
 
-import setupContent from './phases/setup/content';
+import Setup from './phases/setup';
+import Hatch from './phases/hatch';
+import Trade from './phases/trade';
 
 function useInitials() {
   const [initials, setInitials] = useState(defaultInitials);
@@ -361,32 +363,23 @@ function App() {
 
   return (
     <div style={{ width: '100%' }}>
-      <InitialsProvider>
-        <TransitionGroup>
-          <CSSTransition key={location.key} classNames="fade" timeout={300}>
-            <Switch location={location}>
-              {setupContent.map((item, index) => (
-                <Route
-                  key={item.title}
-                  path={item.path}
-                  children={
-                    <HeroSlide
-                      item={item}
-                      goNext={
-                        setupContent[index + 1] && setupContent[index + 1].path
-                      }
-                      goPrev={
-                        setupContent[index - 1] && setupContent[index - 1].path
-                      }
-                      navmenu={setupContent}
-                    ></HeroSlide>
-                  }
-                />
-              ))}
-            </Switch>
-          </CSSTransition>
-        </TransitionGroup>
-      </InitialsProvider>
+      <Grommet theme={theme}>
+        <InitialsProvider>
+          <Switch location={location}>
+            <Route path="/setup">
+              <Setup />
+            </Route>
+
+            <Route path="/setup">
+              <Hatch />
+            </Route>
+
+            <Route path="/setup">
+              <Trade />
+            </Route>
+          </Switch>
+        </InitialsProvider>
+      </Grommet>
     </div>
   );
 

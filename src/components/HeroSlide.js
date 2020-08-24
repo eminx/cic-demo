@@ -90,15 +90,19 @@ export default function HeroSlide({
             </Columns>
             <Box direction="row" justify="between">
               <Box>
-                <Link to={goPrev}>
-                  <Button isSize="medium">Previous</Button>
-                </Link>
+                {goPrev && (
+                  <Link to={goPrev}>
+                    <Button isSize="medium">Previous</Button>
+                  </Link>
+                )}
               </Box>
 
               <Box>
-                <Link to={goNext}>
-                  <Button isSize="medium">Next</Button>
-                </Link>
+                {goNext && (
+                  <Link to={goNext}>
+                    <Button isSize="medium">Next</Button>
+                  </Link>
+                )}
               </Box>
             </Box>
           </Box>
