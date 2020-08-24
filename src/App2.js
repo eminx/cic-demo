@@ -1,4 +1,14 @@
 import React, { useState, useRef } from 'react';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+  useLocation,
+  useParams,
+} from 'react-router-dom';
 import {
   Anchor,
   Paragraph,
@@ -10,45 +20,11 @@ import {
   Text,
   Footer,
 } from 'grommet';
-import { NumberInput } from 'grommet-controls';
-import {
-  ResponsiveContainer,
-  ComposedChart,
-  //Bar,
-  Legend,
-  Line,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Label,
-  Tooltip,
-  Area,
-  //AreaChart,
-} from 'recharts';
-import {
-  Atm,
-  Money,
-  Cafeteria,
-  Tools,
-  Bike,
-  Basket,
-  Book,
-  Grow,
-} from 'grommet-icons';
+import constate from 'constate';
 import { Container, Row, Col, ScreenClassRender } from 'react-grid-system';
-import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
 
 import theme from './config/theme';
-import {
-  AppBar,
-  InitialsUI,
-  PlayMonitor,
-  NumberDisplay,
-  TextDisplay,
-  HeroSlide,
-} from './components';
+import { AppBar, HeroSlide } from './components';
 import {
   getNewSupplyCashIn,
   getNewReserveCashOut,
@@ -56,31 +32,23 @@ import {
   getInvPrice,
   getCRR,
   defaultInitials,
+  defaultReserveCurrency,
   defaultCICAmount,
   defaultResAmount,
   defaultPriceSetItem,
 } from './config';
 
-const introSlides = [
-  {
-    title: 'Virtualise your library',
-    subtitle:
-      'Put up your books to see and plan what to read. let others see what you have',
-    color: 'info',
-  },
-  {
-    title: 'Inspire and Discover Books',
-    subtitle:
-      'Get to see the books people have in short distance to you and borrow. Discover new books',
-    color: 'primary',
-  },
-  {
-    title: 'Let People Read More',
-    subtitle:
-      'Get borrow requests from interesting readers in your city, become a librarian',
-    color: 'success',
-  },
-];
+import setupContent from './phases/setup/content';
+
+function useCurrency() {
+  const [reserveCurrency, setReserveCurrency] = useState(
+    defaultReserveCurrency
+  );
+
+  return { reserveCurrency, setReserveCurrency };
+}
+
+export const [CurrencyProvider, useCurrencyContext] = constate(useCurrency);
 
 function App() {
   const [initials, setInitials] = useState(defaultInitials);
@@ -90,7 +58,6 @@ function App() {
     defaultResAmount
   );
   const [priceSet, setPriceSet] = useState([defaultPriceSetItem]);
-  const [step, setStep] = useState(0);
 
   const setInitial = (initial) => {
     setInitials({ ...initials, ...initial });
@@ -389,32 +356,34 @@ function App() {
   }));
 
   const slider = useRef(null);
+  let location = useLocation();
 
   return (
-    <Slider
-      ref={slider}
-      // arrows={![0, 1, 2].includes(carouselIndex)}
-      // dots={![0, 1, 2].includes(carouselIndex)}
-      afterChange={(index) => setStep(index)}
-      // swipe={!this.isSliderDisabled()}
-      infinite={false}
-      adaptiveHeight
-      initialSlide={0}
-      className="custom-slider"
-    >
-      {introSlides.map((slide) => (
-        <HeroSlide
-          key={slide.title}
-          isColor={slide.color}
-          title={slide.title}
-          subtitle={slide.subtitle}
-          // goNext={slider.slickNext()}
-        />
-      ))}
-      <HeroSlide>Emiiin</HeroSlide>
-      <HeroSlide>Emiiin guzum</HeroSlide>
-      <HeroSlide>Emiiin at</HeroSlide>
-    </Slider>
+    <div style={{ width: '100%' }}>
+      <CurrencyProvider>
+        <TransitionGroup>
+          <CSSTransition key={location.key} classNames="fade" timeout={300}>
+            <Switch location={location}>
+              {setupContent.map((item, index) => (
+                <Route
+                  key={item.title}
+                  path={item.path}
+                  children={
+                    <HeroSlide
+                      item={item}
+                      goNext={
+                        setupContent[index + 1] && setupContent[index + 1].path
+                      }
+                      navmenu={setupContent}
+                    ></HeroSlide>
+                  }
+                />
+              ))}
+            </Switch>
+          </CSSTransition>
+        </TransitionGroup>
+      </CurrencyProvider>
+    </div>
   );
 
   return (
@@ -451,486 +420,7 @@ function App() {
                   </Row>
                 </AppBar>
                 <Main style={{ minHeight: '100vh' }}>
-                  <Row style={{ marginLeft: 0, marginRight: 0 }}>
-                    <Col lg={playMode ? 2.5 : 12}>
-                      <Box
-                        width={playMode ? 'small' : 'large'}
-                        style={{ margin: '0 auto' }}
-                        animation={playMode ? 'slideLeft' : 'fadeIn'}
-                        pad={{ bottom: 'xlarge' }}
-                      >
-                        {playMode ? (
-                          <PlayMonitor initials={initials} />
-                        ) : (
-                          <InitialsUI
-                            initials={initials}
-                            setInitial={setInitial}
-                            large={large}
-                          />
-                        )}
-
-                        <Box pad={{ vertical: 'medium' }} justify="between">
-                          {/*playMode && (
-                            <Button label="Reset" onClick={() => resetAll()} />
-                          )*/}
-                          <Button
-                            primary={!playMode}
-                            label={playMode ? 'Restart' : 'Start'}
-                            onClick={() => changePlayMode()}
-                          />
-                        </Box>
-                      </Box>
-                    </Col>
-
-                    {playMode && (
-                      <Col lg={9.5}>
-                        <Box
-                          animation="zoomIn"
-                          pad={{ top: 'medium', bottom: 'medium' }}
-                        >
-                          <Row>
-                            <Col md={3}>
-                              <Box align="start" pad="xsmall" gap="small">
-                                <TextDisplay
-                                  inline
-                                  label="Buy CIC-committed goods and services"
-                                  color="brand"
-                                  size="small"
-                                />
-
-                                <Box
-                                  direction="row"
-                                  align="center"
-                                  gap="xsmall"
-                                >
-                                  <Button
-                                    onClick={() => buyCIC(50)}
-                                    color="brand"
-                                    icon={<Basket />}
-                                    label="Buy 50"
-                                    size="small"
-                                  />
-                                  <Button
-                                    onClick={() => buyCIC(250)}
-                                    color="brand"
-                                    icon={<Tools />}
-                                    label="Buy 250"
-                                    size="small"
-                                  />
-                                </Box>
-
-                                <TextDisplay
-                                  inline
-                                  label="Sell CIC-committed goods and services"
-                                  color="brand"
-                                  size="small"
-                                />
-
-                                <Box
-                                  direction="row"
-                                  align="center"
-                                  gap="xsmall"
-                                >
-                                  <Button
-                                    onClick={() => sellCIC(300)}
-                                    color="brand"
-                                    icon={<Cafeteria />}
-                                    label="Sell 300"
-                                    size="small"
-                                  />
-                                  <Button
-                                    onClick={() => sellCIC(500)}
-                                    color="brand"
-                                    icon={<Grow />}
-                                    label="Sell 500"
-                                    size="small"
-                                  />
-                                </Box>
-                                <NumberDisplay
-                                  inline
-                                  value={initials.cicBal}
-                                  label="My CIC: "
-                                  color="brand"
-                                  align="start"
-                                  size="small"
-                                />
-
-                                <Box
-                                  direction="row"
-                                  align="center"
-                                  gap="xsmall"
-                                >
-                                  <NumberDisplay
-                                    inline
-                                    value={initials.cicPurchases}
-                                    label="Bought: "
-                                    color="brand"
-                                    align="start"
-                                    size="small"
-                                  />
-                                  <NumberDisplay
-                                    inline
-                                    value={initials.cicSales}
-                                    label="Sold: "
-                                    color="brand"
-                                    align="start"
-                                    size="small"
-                                  />
-                                </Box>
-                                <NumberDisplay
-                                  inline
-                                  value={getCICTradeBalance()}
-                                  label="Trade Balance: "
-                                  color="brand"
-                                  align="start"
-                                  size="small"
-                                />
-
-                                <Box
-                                  pad={{ top: 'medium', bottom: 'large' }}
-                                  gap="small"
-                                >
-                                  <NumberInput
-                                    size="small"
-                                    width="small"
-                                    value={cicExchangeInput.toString()}
-                                    decimals={0}
-                                    step={100}
-                                    min={0}
-                                    max={Math.floor(
-                                      Math.min(
-                                        initials.cicBal,
-                                        initials.supply * 0.999
-                                      )
-                                    )}
-                                    onChange={({ target: { value } }) =>
-                                      setCicExchangeInput(Number(value))
-                                    }
-                                    onInput={() => null}
-                                  />
-                                  <Button
-                                    primary
-                                    onClick={() => cashOut()}
-                                    color="brand"
-                                    icon={<Atm />}
-                                    label="Redeem CIC"
-                                    size="small"
-                                    disabled={cicExchangeInput <= 0}
-                                  />
-                                  <NumberDisplay
-                                    inline
-                                    value={getCashOut()}
-                                    label="Recieve National Currency: "
-                                    color="complementary"
-                                    size="small"
-                                  />
-
-                                  <NumberDisplay
-                                    inline
-                                    value={getPrice(
-                                      initials.reserve,
-                                      initials.supply,
-                                      initials.trr
-                                    )}
-                                    label="@Rate: "
-                                    color="brand"
-                                    size="small"
-                                  />
-                                </Box>
-                              </Box>
-                            </Col>
-
-                            <Col md={3}>
-                              <Box align="start" pad="xsmall" gap="small">
-                                <TextDisplay
-                                  inline
-                                  label="Buy with National Currency"
-                                  color="complementary"
-                                  size="small"
-                                />
-
-                                <Box
-                                  direction="row"
-                                  align="center"
-                                  gap="xsmall"
-                                >
-                                  <Button
-                                    onClick={() => buyReserve(100)}
-                                    color="complementary"
-                                    icon={<Book />}
-                                    label="Buy 100"
-                                    size="small"
-                                  />
-                                  <Button
-                                    onClick={() => buyReserve(500)}
-                                    color="complementary"
-                                    icon={<Bike />}
-                                    label="Buy 500"
-                                    size="small"
-                                  />
-                                </Box>
-
-                                <TextDisplay
-                                  inline
-                                  label="Sell with National Currency"
-                                  color="complementary"
-                                  size="small"
-                                />
-
-                                <Box
-                                  direction="row"
-                                  align="center"
-                                  gap="xsmall"
-                                >
-                                  <Button
-                                    onClick={() => sellReserve(300)}
-                                    color="complementary"
-                                    icon={<Cafeteria />}
-                                    label="Sell 300"
-                                    size="small"
-                                  />
-                                  <Button
-                                    onClick={() => sellReserve(500)}
-                                    color="complementary"
-                                    icon={<Grow />}
-                                    label="Sell 500"
-                                    size="small"
-                                  />
-                                </Box>
-
-                                <NumberDisplay
-                                  inline
-                                  value={initials.resBal}
-                                  label="My National Currency: "
-                                  align="start"
-                                  color="complementary"
-                                  size="small"
-                                />
-                                <Box
-                                  direction="row"
-                                  align="center"
-                                  gap="xsmall"
-                                >
-                                  <NumberDisplay
-                                    inline
-                                    value={initials.resPurchases}
-                                    label="Bought: "
-                                    color="complementary"
-                                    align="smart"
-                                    size="small"
-                                  />
-
-                                  <NumberDisplay
-                                    inline
-                                    value={initials.resSales}
-                                    label="Sold: "
-                                    color="complementary"
-                                    align="start"
-                                    size="small"
-                                  />
-                                </Box>
-                                <NumberDisplay
-                                  inline
-                                  value={getRESTradeBalance()}
-                                  label="Trade Balance: "
-                                  color="complementary"
-                                  align="start"
-                                  size="small"
-                                />
-
-                                <Box
-                                  pad={{ top: 'medium', bottom: 'large' }}
-                                  gap="small"
-                                >
-                                  <NumberInput
-                                    size="small"
-                                    width="small"
-                                    value={reserveExchangeInput.toString()}
-                                    decimals={0}
-                                    step={100}
-                                    min={0}
-                                    max={Math.floor(initials.resBal)}
-                                    onChange={({ target: { value } }) =>
-                                      setReserveExchangeInput(Number(value))
-                                    }
-                                    onInput={() => null}
-                                  />
-
-                                  <Button
-                                    primary
-                                    onClick={() => cashIn()}
-                                    color="complementary"
-                                    icon={<Money color="white" />}
-                                    label="Contribute Reserve"
-                                    size="small"
-                                    style={{ color: 'white' }}
-                                    disabled={reserveExchangeInput <= 0}
-                                  />
-                                  <NumberDisplay
-                                    inline
-                                    value={getCashIn()}
-                                    label="Create CIC : "
-                                    size="small"
-                                    color="brand"
-                                  />
-
-                                  <NumberDisplay
-                                    inline
-                                    value={getInvPrice(
-                                      initials.reserve,
-                                      initials.supply,
-                                      initials.trr
-                                    )}
-                                    label="@Rate: "
-                                    color="complementary"
-                                    size="small"
-                                    align="end"
-                                  />
-                                </Box>
-                              </Box>
-                            </Col>
-                            <Col lg={6}>
-                              <ResponsiveContainer height={200}>
-                                <ComposedChart
-                                  // width="100%"
-                                  height={200}
-                                  data={priceSetWithCicPrices}
-                                  margin={{
-                                    top: 20,
-                                    right: 30,
-                                    left: 0,
-                                    bottom: 0,
-                                  }}
-                                >
-                                  <CartesianGrid strokeDasharray="1 3" />
-                                  <YAxis>
-                                    <Label
-                                      value=""
-                                      offset={0}
-                                      position="insideTopLeft"
-                                    />
-                                  </YAxis>
-
-                                  <Tooltip />
-                                  <Legend />
-                                  {/*<Bar
-                                      name="Reserve Ratio"
-                                      stackId="a"                     
-                                      fill="complementary"
-                                      dataKey="crr"
-                                      barSize={15}
-                                    />
-
-                                  <Area
-                                    name="National Currency Reserve"
-                                    type="natural"
-                                    dataKey="res"
-	                 	    stackID="1"
-                                    stroke={theme.global.colors.complementary}
-                                    strokeWidth={2}
-                                  />
-                                  <Area
-                                    name="Total CIC Supply"
-                                    type="natural"
-                                    dataKey="cic"
-	                 	    stackID="1"
-                                    stroke={theme.global.colors.brand}
-                                    strokeWidth={2}
-                                  />
-				   */}
-                                  <Line
-                                    name="Exchange Rate"
-                                    type="natural"
-                                    dataKey="price"
-                                    stroke={theme.global.colors.brand}
-                                    strokeWidth={2}
-                                  />
-                                </ComposedChart>
-                              </ResponsiveContainer>
-                              <ResponsiveContainer height={200}>
-                                <ComposedChart
-                                  // width="100%"
-                                  height={200}
-                                  data={priceSetWithCicPrices}
-                                  margin={{
-                                    top: 20,
-                                    right: 30,
-                                    left: 0,
-                                    bottom: 0,
-                                  }}
-                                >
-                                  <CartesianGrid strokeDasharray="1 3" />
-                                  <YAxis>
-                                    <Label
-                                      value=""
-                                      offset={0}
-                                      position="insideTopLeft"
-                                    />
-                                  </YAxis>
-
-                                  <XAxis dataKey="step">
-                                    <Label
-                                      value="conversions"
-                                      offset={0}
-                                      position="insideBottomRight"
-                                    />
-                                  </XAxis>
-                                  <Tooltip />
-                                  <Legend />
-                                  {/*<Bar
-                                      name="Reserve Ratio"
-                                      stackId="a"                     
-                                      fill="complementary"
-                                      dataKey="crr"
-                                      barSize={15}
-                                    />
-                                  <Line
-                                    name="Exchange Rate"
-                                    type="natural"
-                                    dataKey="price"
-                                    stroke={theme.global.colors.brand}
-                                    strokeWidth={2}
-                                  />
-
-                                  <Area
-                                    name="National Currency Reserve"
-                                    type="natural"
-                                    dataKey="res"
-	                 	    stackID="1"
-                                    stroke={theme.global.colors.complementary}
-                                    strokeWidth={2}
-                                  />
-                                  <Area
-                                    name="Total CIC Supply"
-                                    type="natural"
-                                    dataKey="cic"
-	                 	    stackID="1"
-                                    stroke={theme.global.colors.brand}
-                                    strokeWidth={2}
-                                  />
-				   */}
-                                  <Area
-                                    name="Current Reserve Ratio"
-                                    type="natural"
-                                    dataKey="crr"
-                                    stroke={theme.global.colors.complementary}
-                                    strokeWidth={4}
-                                  />
-                                  <Line
-                                    name="Target Reserve Ratio"
-                                    type="natural"
-                                    dataKey="trr"
-                                    stroke={theme.global.colors.black}
-                                    strokeWidth={3}
-                                  />
-                                </ComposedChart>
-                              </ResponsiveContainer>
-                            </Col>
-                          </Row>
-                        </Box>
-                      </Col>
-                    )}
-                  </Row>
+                  <Row style={{ marginLeft: 0, marginRight: 0 }}></Row>
                 </Main>
 
                 <Footer
@@ -958,5 +448,82 @@ function App() {
     </Grommet>
   );
 }
+
+export function NavLink(props) {
+  return (
+    <li style={styles.navItem}>
+      <Link {...props} style={{ color: 'inherit' }} />
+    </li>
+  );
+}
+
+function HSL() {
+  let { h, s, l } = useParams();
+
+  return <HeroSlide isColor=""></HeroSlide>;
+}
+
+function RGB() {
+  let { r, g, b } = useParams();
+
+  return (
+    <div
+      style={{
+        ...styles.fill,
+        ...styles.rgb,
+        background: `rgb(${r}, ${g}, ${b})`,
+      }}
+    >
+      rgb({r}, {g}, {b})
+    </div>
+  );
+}
+
+export const styles = {};
+
+styles.fill = {
+  position: 'absolute',
+  left: 0,
+  right: 0,
+  top: 0,
+  bottom: 0,
+};
+
+styles.content = {
+  ...styles.fill,
+  top: '40px',
+  textAlign: 'center',
+};
+
+styles.nav = {
+  padding: 0,
+  margin: 0,
+  position: 'absolute',
+  top: 0,
+  height: '40px',
+  width: '100%',
+  display: 'flex',
+};
+
+styles.navItem = {
+  textAlign: 'center',
+  flex: 1,
+  listStyleType: 'none',
+  padding: '10px',
+};
+
+styles.hsl = {
+  ...styles.fill,
+  color: 'white',
+  paddingTop: '20px',
+  fontSize: '30px',
+};
+
+styles.rgb = {
+  ...styles.fill,
+  color: 'white',
+  paddingTop: '20px',
+  fontSize: '30px',
+};
 
 export default App;

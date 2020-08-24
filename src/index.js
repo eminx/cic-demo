@@ -10,18 +10,18 @@ import * as serviceWorker from './serviceWorker';
 
 function RouterWrapper() {
   return (
-    <Router>
-      <div>
+    <div style={{ width: '100%' }}>
+      <Router>
         <Switch>
           <Route exact path="/">
             <App />
           </Route>
-          <Route exact path="/v2">
+          <Route path="/*">
             <App2 />
           </Route>
         </Switch>
-      </div>
-    </Router>
+      </Router>
+    </div>
   );
 }
 
