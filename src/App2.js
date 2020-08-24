@@ -32,7 +32,6 @@ import {
   getInvPrice,
   getCRR,
   defaultInitials,
-  defaultReserveCurrency,
   defaultCICAmount,
   defaultResAmount,
   defaultPriceSetItem,
@@ -40,15 +39,17 @@ import {
 
 import setupContent from './phases/setup/content';
 
-function useCurrency() {
-  const [reserveCurrency, setReserveCurrency] = useState(
-    defaultReserveCurrency
-  );
+function useInitials() {
+  const [initials, setInitials] = useState(defaultInitials);
 
-  return { reserveCurrency, setReserveCurrency };
+  const setInitial = (initial) => {
+    setInitials({ ...initials, ...initial });
+  };
+
+  return { initials, setInitial };
 }
 
-export const [CurrencyProvider, useCurrencyContext] = constate(useCurrency);
+export const [InitialsProvider, useInitialsContext] = constate(useInitials);
 
 function App() {
   const [initials, setInitials] = useState(defaultInitials);
@@ -59,9 +60,9 @@ function App() {
   );
   const [priceSet, setPriceSet] = useState([defaultPriceSetItem]);
 
-  const setInitial = (initial) => {
-    setInitials({ ...initials, ...initial });
-  };
+  // const setInitial = (initial) => {
+  //   setInitials({ ...initials, ...initial });
+  // };
 
   const getRESTradeBalance = () => {
     const { resPurchases, resSales } = initials;
@@ -360,7 +361,7 @@ function App() {
 
   return (
     <div style={{ width: '100%' }}>
-      <CurrencyProvider>
+      <InitialsProvider>
         <TransitionGroup>
           <CSSTransition key={location.key} classNames="fade" timeout={300}>
             <Switch location={location}>
@@ -374,6 +375,9 @@ function App() {
                       goNext={
                         setupContent[index + 1] && setupContent[index + 1].path
                       }
+                      goPrev={
+                        setupContent[index - 1] && setupContent[index - 1].path
+                      }
                       navmenu={setupContent}
                     ></HeroSlide>
                   }
@@ -382,7 +386,7 @@ function App() {
             </Switch>
           </CSSTransition>
         </TransitionGroup>
-      </CurrencyProvider>
+      </InitialsProvider>
     </div>
   );
 

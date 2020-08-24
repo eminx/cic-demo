@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import { Link, useLocation, useHistory } from 'react-router-dom';
 import { Box, Image } from 'grommet';
 import {
   Hero,
@@ -28,6 +28,7 @@ export default function HeroSlide({
   item,
   children,
   goNext = null,
+  goPrev = null,
   navmenu,
   content,
   ...otherProps
@@ -44,7 +45,7 @@ export default function HeroSlide({
 
   return (
     <Hero
-      isColor={item.color}
+      isColor={'light'}
       isFullHeight
       isBold
       isPaddingless={false}
@@ -58,29 +59,49 @@ export default function HeroSlide({
           /> */}
         </Box>
       </HeroHeader>
-      <HeroBody>
-        <Container>
-          <Columns isCentered>
-            <Column isSize={{ mobile: 12, default: 6 }}>
-              <Box width="medium">
-                {item.title && (
-                  <Title isSize={2} isSpaced>
-                    {item.title}
-                  </Title>
-                )}
-                {item.subtitle && (
-                  <Subtitle isSize={5} isSpaced>
-                    {' '}
-                    {item.subtitle}
-                  </Subtitle>
-                )}
-                {LeftContent && <LeftContent />}
+      <HeroBody
+        style={{
+          alignItems: 'stretch',
+        }}
+      >
+        <Container style={{ alignItems: 'stretch' }}>
+          <Box justify="between" width="100%" height="100%">
+            <Box></Box>
+            <Columns isCentered>
+              <Column isSize={{ mobile: 12, default: 6 }}>
+                <Box width="medium">
+                  {item.title && (
+                    <Title isSize={2} isSpaced>
+                      {item.title}
+                    </Title>
+                  )}
+                  {item.subtitle && (
+                    <Subtitle isSize={5} isSpaced>
+                      {' '}
+                      {item.subtitle}
+                    </Subtitle>
+                  )}
+                  {LeftContent && <LeftContent />}
+                </Box>
+              </Column>
+              <Column isSize={{ mobile: 12, default: 6 }}>
+                <Box>{Content && <Content />}</Box>
+              </Column>
+            </Columns>
+            <Box direction="row" justify="between">
+              <Box>
+                <Link to={goPrev}>
+                  <Button isSize="medium">Previous</Button>
+                </Link>
               </Box>
-            </Column>
-            <Column isSize={{ mobile: 12, default: 6 }}>
-              <Box>{Content && <Content />}</Box>
-            </Column>
-          </Columns>
+
+              <Box>
+                <Link to={goNext}>
+                  <Button isSize="medium">Next</Button>
+                </Link>
+              </Box>
+            </Box>
+          </Box>
         </Container>
       </HeroBody>
 

@@ -91,11 +91,8 @@ const defaultInitials = {
   resPurchases: 0,
   cicSales: 0,
   resSales: 0,
-};
-
-const defaultReserveCurrency = {
-  value: 'KES',
-  label: 'Kenyan Shilling',
+  reserveCurrency: { label: 'Kenyan Shilling', value: 'KES' },
+  cicName: { label: '', value: '' },
 };
 
 const currentInitials = {
@@ -133,7 +130,6 @@ export {
   getInvPrice,
   getCRR,
   defaultInitials,
-  defaultReserveCurrency,
   currentInitials,
   defaultCICAmount,
   defaultResAmount,
