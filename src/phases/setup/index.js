@@ -1,12 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-  useLocation,
-} from 'react-router-dom';
+import { Switch, Route, useLocation } from 'react-router-dom';
 import {
   Box,
   Select,
@@ -23,7 +17,7 @@ import { useInitialsContext } from '../../App2';
 import nationalCurrenciesJSON from '../../config/national-currencies.json';
 import setupContent from './content';
 
-const queryString = require('query-string');
+// const queryString = require('query-string');
 
 const nationalCurrencies = [];
 
@@ -109,12 +103,12 @@ export function SetupInitials() {
 
   const { cicIconPath } = initials;
 
-  const parsedQuery = queryString.parse(window.location.search);
+  // const parsedQuery = queryString.parse(window.location.search);
 
-  const setQuery = (value) => {
-    const stringified = queryString.stringify({ ...parsedQuery, ...value });
-    window.location.search = stringified;
-  };
+  // const setQuery = (value) => {
+  //   const stringified = queryString.stringify({ ...parsedQuery, ...value });
+  //   window.location.search = stringified;
+  // };
 
   return (
     <Box gap="large">
@@ -189,13 +183,8 @@ export function SetupInitials() {
 }
 
 export function SetupReserve() {
-  const [showIcon, setShowIcon] = useState(true);
   const { initials, setInitial } = useInitialsContext();
   const [currencies, setCurrencies] = useState(nationalCurrencies);
-
-  useEffect(() => {
-    setTimeout(() => setShowIcon(false), 3000);
-  }, []);
 
   const handleSearch = (searchText) => {
     const regexp = new RegExp(searchText, 'i');
@@ -481,7 +470,7 @@ export function SetupTRR() {
 }
 
 export function SetupConfirm() {
-  const { initials, setInitial } = useInitialsContext();
+  const { initials } = useInitialsContext();
   const tableData = confirmationSheet(initials);
 
   const cellStyle = {

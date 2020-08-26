@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation, useHistory } from 'react-router-dom';
-import { Box, Image } from 'grommet';
+import { Box } from 'grommet';
 import {
   Hero,
   HeroBody,
