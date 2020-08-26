@@ -12,6 +12,7 @@
     "grommet": "^2.14.0",
     "grommet-controls": "^2.0.4",
     "grommet-icons": "^4.4.0",
+    "query-string": "^6.13.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-grid-system": "^7.0.2",

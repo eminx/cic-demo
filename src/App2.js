@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import {
   BrowserRouter as Router,
   Switch,
@@ -53,7 +52,7 @@ function useInitials() {
 
 export const [InitialsProvider, useInitialsContext] = constate(useInitials);
 
-function App() {
+export default function App() {
   const [initials, setInitials] = useState(defaultInitials);
   const [playMode, setPlayMode] = useState(false);
   const [cicExchangeInput, setCicExchangeInput] = useState(defaultCICAmount);
@@ -362,25 +361,26 @@ function App() {
   let location = useLocation();
 
   return (
-    <div style={{ width: '100%' }}>
-      <Grommet theme={theme}>
-        <InitialsProvider>
-          <Switch location={location}>
-            <Route path="/setup">
-              <Setup />
-            </Route>
+    <Grommet theme={theme}>
+      <InitialsProvider>
+        <Switch location={location}>
+          <Route path="/v2">
+            <Redirect to="/setup" />
+          </Route>
+          <Route path="/setup">
+            <Setup />
+          </Route>
 
-            <Route path="/setup">
-              <Hatch />
-            </Route>
+          <Route path="/hatch">
+            <Hatch />
+          </Route>
 
-            <Route path="/setup">
-              <Trade />
-            </Route>
-          </Switch>
-        </InitialsProvider>
-      </Grommet>
-    </div>
+          <Route path="/trade">
+            <Trade />
+          </Route>
+        </Switch>
+      </InitialsProvider>
+    </Grommet>
   );
 
   return (
@@ -445,82 +445,3 @@ function App() {
     </Grommet>
   );
 }
-
-export function NavLink(props) {
-  return (
-    <li style={styles.navItem}>
-      <Link {...props} style={{ color: 'inherit' }} />
-    </li>
-  );
-}
-
-function HSL() {
-  let { h, s, l } = useParams();
-
-  return <HeroSlide isColor=""></HeroSlide>;
-}
-
-function RGB() {
-  let { r, g, b } = useParams();
-
-  return (
-    <div
-      style={{
-        ...styles.fill,
-        ...styles.rgb,
-        background: `rgb(${r}, ${g}, ${b})`,
-      }}
-    >
-      rgb({r}, {g}, {b})
-    </div>
-  );
-}
-
-export const styles = {};
-
-styles.fill = {
-  position: 'absolute',
-  left: 0,
-  right: 0,
-  top: 0,
-  bottom: 0,
-};
-
-styles.content = {
-  ...styles.fill,
-  top: '40px',
-  textAlign: 'center',
-};
-
-styles.nav = {
-  padding: 0,
-  margin: 0,
-  position: 'absolute',
-  top: 0,
-  height: '40px',
-  width: '100%',
-  display: 'flex',
-};
-
-styles.navItem = {
-  textAlign: 'center',
-  flex: 1,
-  listStyleType: 'none',
-  padding: '10px',
-};
-
-styles.hsl = {
-  ...styles.fill,
-  color: 'white',
-  paddingTop: '20px',
-  fontSize: '30px',
-};
-
-styles.rgb = {
-  ...styles.fill,
-  color: 'white',
-  paddingTop: '20px',
-  fontSize: '30px',
-};
-
-export default App;

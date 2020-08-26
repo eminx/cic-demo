@@ -16,12 +16,6 @@ import {
   Tab,
   TabLink,
   TabList,
-  Nav,
-  NavItem,
-  NavLeft,
-  NavRight,
-  NavCenter,
-  Icon,
 } from 'bloomer';
 
 export default function HeroSlide({
@@ -45,7 +39,7 @@ export default function HeroSlide({
 
   return (
     <Hero
-      isColor={'light'}
+      isColor="light"
       isFullHeight
       isBold
       isPaddingless={false}
@@ -66,7 +60,6 @@ export default function HeroSlide({
       >
         <Container style={{ alignItems: 'stretch' }}>
           <Box justify="between" width="100%" height="100%">
-            <Box></Box>
             <Columns isCentered>
               <Column isSize={{ mobile: 12, default: 6 }}>
                 <Box width="medium">
@@ -75,12 +68,13 @@ export default function HeroSlide({
                       {item.title}
                     </Title>
                   )}
-                  {item.subtitle && (
-                    <Subtitle isSize={5} isSpaced>
-                      {' '}
-                      {item.subtitle}
-                    </Subtitle>
-                  )}
+                  {item.info &&
+                    item.info.length > 0 &&
+                    item.info.map((text) => (
+                      <Subtitle key={text} isSize={6} isSpaced>
+                        {text}
+                      </Subtitle>
+                    ))}
                   {LeftContent && <LeftContent />}
                 </Box>
               </Column>
@@ -98,10 +92,22 @@ export default function HeroSlide({
               </Box>
 
               <Box>
-                {goNext && (
+                {goNext && goPrev ? (
                   <Link to={goNext}>
-                    <Button isSize="medium">Next</Button>
+                    <Button isColor="success" isSize="medium">
+                      Next
+                    </Button>
                   </Link>
+                ) : goNext ? (
+                  <Link to={goNext}>
+                    <Button isColor="success" isSize="medium">
+                      Get Started
+                    </Button>
+                  </Link>
+                ) : (
+                  <Button isColor="info" isSize="medium">
+                    Deploy the Contract
+                  </Button>
                 )}
               </Box>
             </Box>

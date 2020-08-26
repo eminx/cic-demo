@@ -92,7 +92,8 @@ const defaultInitials = {
   cicSales: 0,
   resSales: 0,
   reserveCurrency: { label: 'Kenyan Shilling', value: 'KES' },
-  cicName: { label: '', value: '' },
+  cicName: { label: 'Mangoose', value: 'MGS' },
+  cicIconPath: null,
 };
 
 const currentInitials = {
