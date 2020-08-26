@@ -39,7 +39,7 @@ export default function HeroSlide({
 
   return (
     <Hero
-      isColor="light"
+      isColor={item.color}
       isFullHeight
       isBold
       isPaddingless={false}

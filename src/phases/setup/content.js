@@ -16,7 +16,7 @@ const setupContent = [
       'This is meant to be an interactive & playful tool that is crafted to make it fun learning about the technical details, that may otherwise sound too complex.',
       'Enjoy!',
     ],
-    color: 'danger',
+    color: 'dark',
     content: SetupIntro,
   },
   {

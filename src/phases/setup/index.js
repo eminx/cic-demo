@@ -31,6 +31,7 @@ const nationalCurrencies = [];
 const inputStyle = {
   backgroundColor: '#fff',
   borderRadius: 4,
+  color: '#363636',
 };
 
 for (let value in nationalCurrenciesJSON) {
@@ -419,7 +420,7 @@ export function SetupTRR() {
 
       <Box direction="row" align="center">
         {exchangeGrid.map((item) => (
-          <Box pad="xsmall" width={item.size}>
+          <Box key={item.label} pad="xsmall" width={item.size}>
             <Box>
               <Text
                 weight={item.primary ? 'bold' : 'normal'}
@@ -565,6 +566,7 @@ const confirmationSheet = (initials) => {
 function MonoText({ children }) {
   const style = {
     fontSize: 36,
+    fontWeight: 'bold',
     fontFamily: "'Courier', monospace",
   };
 
