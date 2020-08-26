@@ -211,11 +211,16 @@ export function SetupReserve() {
 
   return (
     <Box gap="medium">
-      <Box direction="row" align="start" justify="between">
+      <Box direction="row" align="end" justify="between">
         <Box width="xsmall" animation="slideRight">
           <Image src="/icons/setup/intro/noun_currency_3159331.svg" />
         </Box>
-        <Box width="large" gap="medium" animation="slideLeft" pad="medium">
+        <Box
+          width="large"
+          gap="medium"
+          animation="slideLeft"
+          pad={{ left: 'medium' }}
+        >
           <Box>
             <Title isSize={6}>Select National Currency for the Reserve</Title>
             <Box
@@ -293,14 +298,14 @@ export function SetupReserve() {
 
       <Box
         direction="row"
-        align="start"
+        align="end"
         justify="between"
         margin={{ top: 'medium' }}
       >
         <Box width="xsmall" animation="slideRight">
           <Image src="/icons/setup/intro/noun_Value_2651524.svg" />
         </Box>
-        <Box width="large" animation="slideLeft" pad="medium">
+        <Box width="large" animation="slideLeft" pad={{ left: 'medium' }}>
           <Title isSize={6}>
             Amount of CIC tokens to be issued and supplied
           </Title>
@@ -544,11 +549,11 @@ const confirmationSheet = (initials) => {
     },
     {
       label: 'Target Reserve Ratio:',
-      value: (initials.trr * 100).toString() + '%',
+      value: (initials.trr * 100).toFixed(0).toString() + '%',
     },
     {
       label: 'Start Exchange Rate:',
-      value: (initials.trr * initials.supply) / initials.reserve,
+      value: ((initials.trr * initials.supply) / initials.reserve).toFixed(2),
     },
     {
       label: 'Type of Currency:',
