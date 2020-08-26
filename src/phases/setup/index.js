@@ -22,7 +22,6 @@ import HeroSlide from '../../components/HeroSlide';
 import { useInitialsContext } from '../../App2';
 import nationalCurrenciesJSON from '../../config/national-currencies.json';
 import setupContent from './content';
-import { Subtitle } from 'bloomer/lib/elements/Subtitle';
 
 const queryString = require('query-string');
 
@@ -213,7 +212,11 @@ export function SetupReserve() {
   return (
     <Box gap="medium">
       <Box direction="row" align="end" justify="between">
-        <Box width="xsmall" animation="slideRight">
+        <Box
+          width="xsmall"
+          animation="slideRight"
+          margin={{ bottom: 'medium' }}
+        >
           <Image src="/icons/setup/intro/noun_currency_3159331.svg" />
         </Box>
         <Box
@@ -303,7 +306,11 @@ export function SetupReserve() {
         justify="between"
         margin={{ top: 'medium' }}
       >
-        <Box width="xsmall" animation="slideRight">
+        <Box
+          width="xsmall"
+          animation="slideRight"
+          margin={{ bottom: 'medium' }}
+        >
           <Image src="/icons/setup/intro/noun_Value_2651524.svg" />
         </Box>
         <Box width="large" animation="slideLeft" pad={{ left: 'medium' }}>

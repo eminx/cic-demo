@@ -106,7 +106,7 @@ export default function HeroSlide({
                   </Link>
                 ) : (
                   <Button isColor="info" isSize="medium">
-                    Deploy the Contract
+                    Verify & Deploy the Contract
                   </Button>
                 )}
               </Box>
