@@ -372,7 +372,7 @@ export function SetupTRR() {
       size: 'xxsmall',
     },
     {
-      label: `${cicName.value} supplied`,
+      label: `${cicName.value} supply`,
       size: 'small',
       value: supply,
     },
