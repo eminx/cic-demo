@@ -90,17 +90,9 @@ function App() {
 
     const newcicPurchases = cicPurchases + txAmount;
     const newcicBal = cicBal - txAmount;
-    setInitials({
-      reserve: initials.reserve,
-      supply: initials.supply,
-      trr: initials.trr,
-      crr: initials.crr,
+    setInitial({
       cicBal: newcicBal,
-      resBal: initials.resBal,
       cicPurchases: newcicPurchases,
-      cicSales: initials.cicSales,
-      resPurchases: initials.resPurchases,
-      resSales: initials.resSales,
     });
 
     if (cicExchangeInput > newcicBal) {
@@ -117,17 +109,9 @@ function App() {
 
     const newcicSales = cicSales + txAmount;
     const newcicBal = cicBal + txAmount;
-    setInitials({
-      reserve: initials.reserve,
-      supply: initials.supply,
-      trr: initials.trr,
-      crr: initials.crr,
+    setInitial({
       cicBal: newcicBal,
-      resBal: initials.resBal,
-      cicPurchases: initials.cicPurchases,
       cicSales: newcicSales,
-      resPurchases: initials.resPurchases,
-      resSales: initials.resSales,
     });
 
     if (cicExchangeInput < Math.min(newcicBal, 1000)) {
@@ -143,17 +127,9 @@ function App() {
     }
     const newresPurchases = resPurchases + txAmount;
     const newresBal = resBal - txAmount;
-    setInitials({
-      reserve: initials.reserve,
-      supply: initials.supply,
-      trr: initials.trr,
-      crr: initials.crr,
-      cicBal: initials.cicBal,
+    setInitial({
       resBal: newresBal,
-      cicPurchases: initials.cicPurchases,
-      cicSales: initials.cicSales,
       resPurchases: newresPurchases,
-      resSales: initials.resSales,
     });
     if (reserveExchangeInput > resBal) {
       setReserveExchangeInput(Math.floor(resBal));
@@ -164,16 +140,8 @@ function App() {
     const { resBal, resSales } = initials;
     const newresSales = resSales + txAmount;
     const newresBal = resBal + txAmount;
-    setInitials({
-      reserve: initials.reserve,
-      supply: initials.supply,
-      trr: initials.trr,
-      crr: initials.crr,
-      cicBal: initials.cicBal,
+    setInitial({
       resBal: newresBal,
-      cicPurchases: initials.cicPurchases,
-      cicSales: initials.cicSales,
-      resPurchases: initials.resPurchases,
       resSales: newresSales,
     });
     if (reserveExchangeInput < Math.min(Math.floor(newresBal), 1000)) {
@@ -202,7 +170,6 @@ function App() {
       resPurchases,
       cicSales,
     } = initials;
-    console.log(reserveExchangeInput);
     if (reserveExchangeInput < 0) {
       return;
     }
@@ -225,17 +192,14 @@ function App() {
     const newCRR = newReserve / newSupply;
     const newcicBal = cicBal + addedSupply;
     const newresBal = resBal - reserveExchangeInput; //Math.round(resBal - reserveExchangeInput);
-    setInitials({
+    setInitial({
       reserve: newReserve,
       supply: newSupply,
-      trr: initials.trr,
       crr: newCRR,
       cicBal: newcicBal,
       resBal: newresBal,
-      cicPurchases: initials.cicPurchases,
       cicSales: newcicSales,
       resPurchases: newresPurchases,
-      resSales: initials.resSales,
     });
     setPriceSet([
       ...priceSet,
@@ -296,16 +260,13 @@ function App() {
     const newcicBal = cicBal - cicExchangeInput;
     const newresBal = resBal - addedReserve;
 
-    setInitials({
+    setInitial({
       reserve: newReserve,
       supply: newSupply,
-      trr: initials.trr,
       crr: newCRR,
       cicBal: newcicBal,
       resBal: newresBal,
       cicPurchases: newcicPurchases,
-      cicSales: initials.cicSales,
-      resPurchases: initials.resPurchases,
       resSales: newresSales,
     });
     setPriceSet([
