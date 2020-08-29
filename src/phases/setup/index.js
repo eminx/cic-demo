@@ -96,7 +96,7 @@ const coinIcons = [
   'noun_coin_2704714.svg',
 ];
 
-export function SetupInitials() {
+export function SetupPurpose() {
   const { initials, setInitial } = useInitialsContext();
 
   const selectIcon = (iconPath) => setInitial({ cicIconPath: iconPath });
@@ -177,10 +177,86 @@ export function SetupInitials() {
         >
           coin icons by iconcheese from the Noun Project
         </Text>
-      </Box>
-    </Box>
+	  </Box>
+	  </Box>
+	  
   );
 }
+
+
+export function SetupInitials() {
+  const { initials, setInitial } = useInitialsContext();
+
+  // const parsedQuery = queryString.parse(window.location.search);
+
+  // const setQuery = (value) => {
+  //   const stringified = queryString.stringify({ ...parsedQuery, ...value });
+  //   window.location.search = stringified;
+  // };
+
+  return (
+    <Box gap="large">
+      <Box direction="row" align="center" gap="medium">
+
+      <Box
+        direction="row"
+        align="end"
+        justify="between"
+        margin={{ top: 'medium' }}
+      >
+        <Box
+          width="xsmall"
+          animation="slideRight"
+          margin={{ bottom: 'medium' }}
+        >
+          <Image src="/icons/setup/intro/noun_Value_2651524.svg" />
+        </Box>
+        <Box width="large" animation="slideLeft" pad={{ left: 'medium' }}>
+          <Title isSize={6}>
+            Amount of CIC tokens to be issued and supplied
+          </Title>
+          <Box width="medium">
+            <Box
+              margin={{ bottom: 'small' }}
+              direction="row"
+              gap="medium"
+              align="center"
+            >
+              <TextInput
+                size="large"
+                value={initials.supply.toString()}
+                onChange={({ target: { value } }) =>
+                  Number.isInteger(Number(value)) &&
+                  setInitial({ supply: Number(value) })
+                }
+                style={inputStyle}
+              />
+              <Heading
+                style={{ fontSize: 28, fontFamily: `'Courier', monospace` }}
+              >
+                {initials.cicName.value}
+              </Heading>
+            </Box>
+            <Box>
+              <RangeInput
+                value={initials.supply}
+                onChange={({ target: { value } }) =>
+                  setInitial({ supply: Number(value) })
+                }
+                step={1000}
+                min={0}
+                max={1000000}
+              />
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+	  </Box>
+	  	  </Box>
+	  
+  );
+}
+
 
 export function SetupReserve() {
   const { initials, setInitial } = useInitialsContext();
@@ -284,60 +360,6 @@ export function SetupReserve() {
                   max={1000000}
                 />
               </Box>
-            </Box>
-          </Box>
-        </Box>
-      </Box>
-
-      <Box
-        direction="row"
-        align="end"
-        justify="between"
-        margin={{ top: 'medium' }}
-      >
-        <Box
-          width="xsmall"
-          animation="slideRight"
-          margin={{ bottom: 'medium' }}
-        >
-          <Image src="/icons/setup/intro/noun_Value_2651524.svg" />
-        </Box>
-        <Box width="large" animation="slideLeft" pad={{ left: 'medium' }}>
-          <Title isSize={6}>
-            Amount of CIC tokens to be issued and supplied
-          </Title>
-          <Box width="medium">
-            <Box
-              margin={{ bottom: 'small' }}
-              direction="row"
-              gap="medium"
-              align="center"
-            >
-              <TextInput
-                size="large"
-                value={initials.supply.toString()}
-                onChange={({ target: { value } }) =>
-                  Number.isInteger(Number(value)) &&
-                  setInitial({ supply: Number(value) })
-                }
-                style={inputStyle}
-              />
-              <Heading
-                style={{ fontSize: 28, fontFamily: `'Courier', monospace` }}
-              >
-                {initials.cicName.value}
-              </Heading>
-            </Box>
-            <Box>
-              <RangeInput
-                value={initials.supply}
-                onChange={({ target: { value } }) =>
-                  setInitial({ supply: Number(value) })
-                }
-                step={1000}
-                min={0}
-                max={1000000}
-              />
             </Box>
           </Box>
         </Box>
@@ -528,6 +550,71 @@ export function SetupConfirm() {
     </Box>
   );
 }
+
+export function LocalTrade() {
+  const { initials } = useInitialsContext();
+  const tableData = confirmationSheet(initials);
+
+  const cellStyle = {
+    fontSize: 18,
+    fontFamily: "'Courier', monospace",
+  };
+
+  if (!initials.cicIconPath) {
+    initials.cicIconPath = 'noun_coin_2704615.svg';
+  }
+
+  return (
+    <Box
+      gap="medium"
+      background="white"
+      pad="medium"
+      animation={{ type: 'slideDown' }}
+    >
+      <Box alignSelf="center" direction="row" gap="small" align="center">
+        <Box width="xsmall">
+          <Image
+            src={`/icons/setup/initials/${initials.cicIconPath}`}
+            fill
+            fit="contain"
+          />
+        </Box>
+        <Box width="medium">
+          <MonoText>
+            {initials.cicName.value} {' | '}
+            {initials.cicName.label}
+          </MonoText>
+        </Box>
+      </Box>
+
+      <Box>
+        <DataTable
+          columns={[
+            {
+              property: 'label',
+              render: (datum) => <span style={cellStyle}>{datum.label}</span>,
+            },
+            {
+              property: 'value',
+              render: (datum) => (
+                <span style={cellStyle}>
+                  <b>{datum.value}</b>
+                </span>
+              ),
+              primary: true,
+            },
+          ]}
+          data={tableData}
+        />
+	  </Box>
+
+      
+      
+    </Box>
+  );
+}
+
+
 
 const confirmationSheet = (initials) => {
   return [
