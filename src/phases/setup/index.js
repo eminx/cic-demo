@@ -240,7 +240,7 @@ export function SetupInitials() {
         </Box>
         <Box width="large" animation="slideLeft" pad={{ left: 'medium' }}>
           <Title isSize={6}>
-            Amount of CIC tokens to be issued and supplied
+            Amount of CIC tokens to be issued and distributed to the community
           </Title>
           <Box width="medium">
             <Box
@@ -405,28 +405,10 @@ export function SetupTRR() {
       label: 'Exchange Rate',
       primary: true,
       size: 'small',
-      value: ((trr * supply) / reserve).toFixed(2),
+      value: (reserve/(trr * supply) ).toFixed(2),
     },
     {
       value: '=',
-      size: 'xxsmall',
-    },
-    {
-      label: 'TRR',
-      size: 'small',
-      value: trr,
-    },
-    {
-      value: '*',
-      size: 'xxsmall',
-    },
-    {
-      label: `${cicName.value} supply`,
-      size: 'small',
-      value: supply,
-    },
-    {
-      value: '/',
       size: 'xxsmall',
     },
     {
@@ -434,6 +416,27 @@ export function SetupTRR() {
       size: 'small',
       value: reserve,
     },
+      {
+      value: '/',
+      size: 'xxsmall',
+    },
+    {
+      label: `${cicName.value} supply`,
+      size: 'small',
+      value: supply,
+    },
+
+    {
+      value: '*',
+      size: 'xxsmall',
+    },
+
+      {
+      label: 'TRR',
+      size: 'small',
+      value: trr,
+    },
+
   ];
 
   return (
@@ -1113,7 +1116,7 @@ const confirmationSheet = (initials) => {
         initials.reserveCurrency.value + '|' + initials.reserveCurrency.label,
     },
     {
-      label: 'Tokens to be Issued:',
+      label: 'CIC Tokens to be Issued:',
 	value: initials.supply.toFixed(2).toString() + ' ' + initials.cicName.value,
     },
     {
@@ -1128,10 +1131,6 @@ const confirmationSheet = (initials) => {
       label: 'Start Exchange Rate:',
 	value: (initials.reserve/(initials.trr * initials.supply) ).toFixed(2),
     },
-    {
-      label: 'Type of Currency:',
-      value: 'CIC',
-    },
   ];
 };
 
@@ -1139,7 +1138,7 @@ const confirmationSheet = (initials) => {
 const statsSheet = (initials) => {
   return [
     {
-      label: 'Total Tokens in Circulation:',
+      label: 'Total CIC Tokens in Circulation:',
 	value: initials.supply.toFixed(2).toString() + ' ' + initials.cicName.value,
     },
     {
