@@ -3,6 +3,8 @@ import {
   SetupPurpose,
   SetupInitials,
   SetupReserve,
+  SetupLocalTrade,
+  SetupConvert,
   SetupTRR,
   SetupConfirm,
 } from './';
@@ -91,7 +93,7 @@ const setupContent = [
 
     ],
     color: 'success',
-    content: SetupConfirm,
+    content: SetupLocalTrade,
   },
   {
     path: '/setup/convert',
@@ -104,7 +106,7 @@ const setupContent = [
 
     ],
     color: 'success',
-    content: SetupConfirm,
+    content: SetupConvert,
   },
 ];
 

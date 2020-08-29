@@ -61,9 +61,7 @@ function App() {
   const [initials, setInitials] = useState(defaultInitials);
   const [playMode, setPlayMode] = useState(false);
   const [cicExchangeInput, setCicExchangeInput] = useState(defaultCICAmount);
-  const [reserveExchangeInput, setReserveExchangeInput] = useState(
-    defaultResAmount
-  );
+  const [reserveExchangeInput, setReserveExchangeInput] = useState(defaultResAmount);
   const [priceSet, setPriceSet] = useState([defaultPriceSetItem]);
 
   const setInitial = (initial) => {
