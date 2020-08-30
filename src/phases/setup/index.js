@@ -20,7 +20,18 @@ import {
   Basket,
   Grow,
 } from 'grommet-icons';
-
+import {
+  ResponsiveContainer,
+  ComposedChart,
+  //Bar,
+  Legend,
+  Line,
+  CartesianGrid,
+  YAxis,
+  Label,
+  Tooltip,
+} from 'recharts';
+import theme from '../../config/theme';
 import { Title, Heading } from 'bloomer';
 
 import HeroSlide from '../../components/HeroSlide';
@@ -141,7 +152,7 @@ export function SetupPurpose() {
     <Box gap="large">
       <Box direction="row" align="center" gap="medium">
         <Box basis="60%">
-          <Title isSize={6}>Name your CIC</Title>
+          <Title isSize={6}>Name your Community Inclusion Currency</Title>
           <TextInput
             value={initials.cicName.label}
             onChange={(event) =>
@@ -240,7 +251,7 @@ export function SetupInitials() {
         </Box>
         <Box width="large" animation="slideLeft" pad={{ left: 'medium' }}>
           <Title isSize={6}>
-            Amount of CIC tokens to be issued and distributed to the community
+            Total value of commitments toward community purpose and projects
           </Title>
           <Box width="medium">
             <Box
@@ -254,14 +265,14 @@ export function SetupInitials() {
                 value={initials.supply.toString()}
                 onChange={({ target: { value } }) =>
                   Number.isInteger(Number(value)) &&
-                  setInitial({ supply: Number(value) })
+			  setInitial({ supply: Number(value), cicBal: Number(value) })
                 }
                 style={inputStyle}
               />
               <Heading
                 style={{ fontSize: 28, fontFamily: `'Courier', monospace` }}
               >
-                {initials.cicName.value}
+                {initials.reserveCurrency.value}
               </Heading>
             </Box>
             <Box>
@@ -273,7 +284,18 @@ export function SetupInitials() {
                 step={1000}
                 min={0}
                 max={1000000}
-              />
+          />
+	            <Title isSize={6}>
+          Amount of CIC tokens to be issued and distributed to the community:
+          </Title>
+                                  <NumberDisplay
+                                    inline
+                                    value={initials.supply}
+                                    label={" "+initials.cicName.value+":"}
+                                    color="brand"
+                                    size="small"
+                                  />
+
             </Box>
           </Box>
         </Box>
@@ -318,7 +340,7 @@ export function SetupReserve() {
           pad={{ left: 'medium' }}
         >
           <Box>
-            <Title isSize={6}>Select National Currency for the Reserve</Title>
+            <Title isSize={6}>Select your national currency for the reserve</Title>
             <Box
               direction="row"
               align="center"
@@ -459,9 +481,9 @@ export function SetupTRR() {
             onChange={({ target: { value } }) =>
               setInitial({ trr: Number(value).toFixed(2) })
             }
-            step={0.05}
-            min={0.1}
-            max={0.9}
+            step={0.005}
+            min={0.01}
+            max={1.0}
           />
         </Box>
       </Box>
@@ -502,19 +524,20 @@ export function SetupTRR() {
           animation={{ type: 'slideRight', delay: 300 }}
         >
           <Image src="/icons/setup/intro/noun_Value_2281190.svg" />
-        </Box>
-        <Box width="medium" pad="medium" animation="slideRight">
-          <Image src="/icons/setup/intro/noun_Graph_2155901.svg" />
-        </Box>
-        <Box width="medium" pad="medium" animation="slideLeft">
-          <Image src="/icons/setup/intro/noun_Value_2651524.svg" />
-        </Box>
-        <Box
+          </Box>
+	          <Box
           width="medium"
           pad="medium"
           animation={{ type: 'slideLeft', delay: 300 }}
         >
           <Image src="/icons/setup/intro/noun_currency_3159331.svg" />
+        </Box>
+        <Box width="medium" pad="medium" animation="slideLeft">
+          <Image src="/icons/setup/intro/noun_Value_2651524.svg" />
+        </Box>
+
+        <Box width="medium" pad="medium" animation="slideRight">
+          <Image src="/icons/setup/intro/noun_Graph_2155901.svg" />
         </Box>
       </Box>
     </Box>
@@ -690,7 +713,7 @@ export function SetupLocalTrade() {
                               <Box align="start" pad="xsmall" gap="small">
                                 <TextDisplay
                                   inline
-                                  label="Buy committed goods and services or support local projects."
+      label={"Buy "+initials.cicName.value+" committed goods and services or support local projects."}
                                   color="brand"
                                   size="small"
                                 />
@@ -717,7 +740,7 @@ export function SetupLocalTrade() {
 
                                       <TextDisplay
                                   inline
-                                  label="Sell your CIC committed goods and services or work for a community project"
+                                  label={"Sell your "+initials.cicName.value+" committed goods and services or work for a community project"}
                                   color="brand"
                                   size="small"
                                 />
@@ -745,7 +768,7 @@ export function SetupLocalTrade() {
                                 <NumberDisplay
                                   inline
                                   value={initials.cicBal}
-                                  label="My CIC: "
+                                  label={"My "+initials.cicName.value+" balance:"}
                                   color="brand"
                                   align="start"
                                   size="small"
@@ -805,7 +828,13 @@ export function SetupConvert() {
     initials.cicIconPath = 'noun_coin_2704615.svg';
   }
 
+  const priceSetWithCicPrices = priceSet.map((item) => ({
+    ...item,
+    cicPrice: (1 / item.price).toFixed(3),
+    priceDifference: (1 / item.price - item.price).toFixed(3),
+  }));
 
+    
   const getCashIn = () => {
     const { reserve, supply, trr } = initials;
     const addedSupply = getNewSupplyCashIn(
@@ -828,10 +857,6 @@ export function SetupConvert() {
       cicSales,
     } = initials;
     if (reserveExchangeInput < 0) {
-      return;
-    }
-    if (reserveExchangeInput > resBal) {
-      alert('Not enough National Currency');
       return;
     }
     const newReserve = reserve + reserveExchangeInput;
@@ -869,12 +894,6 @@ export function SetupConvert() {
         step: priceSet.length,
       },
     ]);
-    if (reserveExchangeInput > newresBal) {
-      setReserveExchangeInput(Math.floor(newresBal));
-    }
-    if (cicExchangeInput < Math.min(newcicBal, 1000)) {
-      setCicExchangeInput(Math.min(Math.floor(newcicBal), 1000));
-    }
   };
 
 
@@ -901,8 +920,8 @@ export function SetupConvert() {
       resSales,
     } = initials;
     console.log(cicExchangeInput);
-    if (cicExchangeInput > cicBal) {
-      alert('There is not sufficient cicBal');
+    if (cicExchangeInput >= supply) {
+      alert('There must remain some CIC in circulation');
       return;
     }
 
@@ -912,6 +931,7 @@ export function SetupConvert() {
       trr,
       cicExchangeInput
     );
+      
     const newresSales = resSales - addedReserve;
     const newcicPurchases = cicPurchases + cicExchangeInput;
     const newReserve = reserve + addedReserve;
@@ -940,14 +960,8 @@ export function SetupConvert() {
         step: priceSet.length,
       },
     ]);
-    if (cicExchangeInput > newcicBal) {
-      setCicExchangeInput(Math.floor(newcicBal));
-    }
     if (cicExchangeInput > newSupply) {
       setCicExchangeInput(Math.floor(newSupply * 0.9999));
-    }
-    if (reserveExchangeInput < Math.min(Math.floor(newresBal), 1000)) {
-      setReserveExchangeInput(Math.min(Math.floor(newresBal), 1000));
     }
   };
 
@@ -960,22 +974,6 @@ export function SetupConvert() {
       pad="medium"
       animation={{ type: 'slideDown' }}
     >
-      <Box alignSelf="center" direction="row" gap="small" align="center">
-        <Box width="xsmall">
-          <Image
-            src={`/icons/setup/initials/${initials.cicIconPath}`}
-            fill
-            fit="contain"
-          />
-        </Box>
-        <Box width="medium">
-          <MonoText>
-            {initials.cicName.value} {' | '}
-            {initials.cicName.label}
-          </MonoText>
-        </Box>
-      </Box>
-
       <Box>
         <DataTable
           columns={[
@@ -997,10 +995,68 @@ export function SetupConvert() {
         />
 	  </Box>
 
+      	  <ResponsiveContainer height={100}>
+                                <ComposedChart
+                                  // width="100%"
+                                  height={100}
+                                  data={priceSetWithCicPrices}
+                                  margin={{
+                                    top: 20,
+                                    right: 30,
+                                    left: 0,
+                                    bottom: 0,
+                                  }}
+                                >
+                                  <CartesianGrid strokeDasharray="1 3" />
+                                  <YAxis>
+                                    <Label
+                                      value=""
+                                      offset={0}
+                                      position="insideTopLeft"
+                                    />
+                                  </YAxis>
+
+                                  <Tooltip />
+                                  <Legend />
+                                  {/*<Bar
+                                      name="Reserve Ratio"
+                                      stackId="a"                     
+                                      fill="complementary"
+                                      dataKey="crr"
+                                      barSize={15}
+                                    />
+
+                                  <Area
+                                    name="National Currency Reserve"
+                                    type="natural"
+                                    dataKey="res"
+	                 	    stackID="1"
+                                    stroke={theme.global.colors.complementary}
+                                    strokeWidth={2}
+                                  />
+                                  <Area
+                                    name="Total CIC Supply"
+                                    type="natural"
+                                    dataKey="cic"
+	                 	    stackID="1"
+                                    stroke={theme.global.colors.brand}
+                                    strokeWidth={2}
+                                  />
+				   */}
+                                  <Line
+                                    name="Exchange Rate"
+                                    type="natural"
+                                    dataKey="price"
+                                    stroke={theme.global.colors.brand}
+                                    strokeWidth={2}
+                                  />
+                                </ComposedChart>
+                              </ResponsiveContainer>
+
 
                                 <Box
-                                  pad={{ top: 'small', bottom: 'xsmall' }}
-                                  gap="small"
+                                  pad={{ top: 'xsmall', bottom: 'xsmall' }}
+                                  gap="xsmall"
                                 >
                                   <NumberInput
                                     size="small"
@@ -1009,12 +1065,9 @@ export function SetupConvert() {
                                     decimals={0}
                                     step={100}
                                     min={0}
-                                    max={Math.floor(
-                                      Math.min(
-                                        initials.cicBal,
+                                    max={
                                         initials.supply * 0.999
-                                      )
-                                    )}
+                                      }
                                     onChange={({ target: { value } }) =>
                                       setCicExchangeInput(Number(value))
                                     }
@@ -1044,7 +1097,7 @@ export function SetupConvert() {
                                       initials.supply,
                                       initials.trr
                                     )}
-                                    label={"@Rate to "+initials.reserveCurrency.value+":"}
+                                    label={"Exchange Rate to "+initials.reserveCurrency.value+":"}
                                     color="brand"
                                     size="small"
                                   />
@@ -1053,8 +1106,8 @@ export function SetupConvert() {
 
       
                                 <Box
-                                  pad={{ top: 'small', bottom: 'xsmall' }}
-                                  gap="small"
+                                  pad={{ top: 'xsmall', bottom: 'xsmall' }}
+                                  gap="xsmall"
                                 >
                                   <NumberInput
                                     size="small"
@@ -1063,7 +1116,7 @@ export function SetupConvert() {
                                     decimals={0}
                                     step={100}
                                     min={0}
-                                    max={Math.floor(initials.resBal)}
+                                    max={10000000000000}
                                     onChange={({ target: { value } }) =>
                                       setReserveExchangeInput(Number(value))
                                     }
@@ -1095,12 +1148,12 @@ export function SetupConvert() {
                                       initials.supply,
                                       initials.trr
                                     )}
-                                      label={"@Rate to "+ initials.cicName.value+":"}
+                                      label={"(Inverse) Exchange Rate to "+ initials.cicName.value+":"}
                                     color="complementary"
                                     size="small"
                                     align="end"
                                   />
-                                </Box>
+          </Box>
                               </Box>
 
   );
@@ -1144,14 +1197,6 @@ const statsSheet = (initials) => {
     {
       label: 'Reserve Amount:',
 	value: initials.reserve.toFixed(2).toString() + ' ' + initials.reserveCurrency.value,
-    },
-    {
-      label: 'Target Reserve Ratio:',
-      value: (initials.trr * 100).toFixed(0).toString() + '%',
-    },
-    {
-      label: 'Exchange Rate:',
-      value: (initials.reserve / (initials.trr * initials.supply) ).toFixed(2),
     },
   ];
 };

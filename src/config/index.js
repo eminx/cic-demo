@@ -33,7 +33,11 @@ const getNewSupplyCashIn = (reserve, supply, trr, amount) => {
 const getNewReserveCashOut = (reserve, supply, trr, amount) => {
   if (supply > 0) {
     const newReserve =
-      reserve * (Math.pow(1 + (-1 * amount) / supply, 1 / trr) - 1);
+	  reserve * (Math.pow(1 + (-1 * amount) / supply, 1 / trr) - 1);
+      if (-1*newReserve >= reserve){ //rounding errors
+	  const newReserveFinal = newReserve + 0.001;
+	  return newReserveFinal
+      }
     return newReserve; //Math.round(newReserve);
   } else {
     return 0;
@@ -91,8 +95,8 @@ const defaultInitials = {
   resPurchases: 0,
   cicSales: 0,
   resSales: 0,
-  reserveCurrency: { label: 'Kenyan Shilling', value: 'KES' },
-  cicName: { label: 'Mangoose', value: 'MGS' },
+  reserveCurrency: { label: 'US Dollars', value: 'USD' },
+  cicName: { label: 'Village Token', value: 'VIGI' },
   cicIconPath: null,
 };
 
