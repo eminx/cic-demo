@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap");
 
 body {
   margin: 0;
@@ -7,7 +7,7 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
@@ -101,4 +101,17 @@ html {
 }
 .deg315 {
   transform: rotate(315deg) translate(12em) rotate(-315deg);
+}
+
+.main-hero.hero.is-info > .hero-foot > .tabs.is-boxed li.is-active a {
+  color: #3298dc;
+}
+.main-hero.hero.is-warning > .hero-foot > .tabs.is-boxed li.is-active a {
+  color: #ffdd57;
+}
+.main-hero.hero.is-dark > .hero-foot > .tabs.is-boxed li.is-active a {
+  color: #363636;
+}
+.main-hero.hero.is-success > .hero-foot > .tabs.is-boxed li.is-active a {
+  color: #48c774;
 }

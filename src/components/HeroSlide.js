@@ -1,6 +1,6 @@
-import React from 'react';
-import { Link, useLocation, useHistory } from 'react-router-dom';
-import { Box } from 'grommet';
+import React from "react";
+import { Link, useLocation, useHistory } from "react-router-dom";
+import { Box } from "grommet";
 import {
   Hero,
   HeroBody,
@@ -16,7 +16,7 @@ import {
   Tab,
   TabLink,
   TabList,
-} from 'bloomer';
+} from "bloomer";
 
 export default function HeroSlide({
   item,
@@ -43,6 +43,7 @@ export default function HeroSlide({
       isFullHeight
       isBold
       isPaddingless={false}
+      className="main-hero"
       {...otherProps}
     >
       <HeroHeader>
@@ -55,10 +56,10 @@ export default function HeroSlide({
       </HeroHeader>
       <HeroBody
         style={{
-          alignItems: 'stretch',
+          alignItems: "stretch",
         }}
       >
-        <Container style={{ alignItems: 'stretch' }}>
+        <Container style={{ alignItems: "stretch" }}>
           <Box justify="between" width="100%" height="100%">
             <Columns isCentered>
               <Column isSize={{ mobile: 12, default: 6 }}>
@@ -119,15 +120,19 @@ export default function HeroSlide({
         <Tabs isBoxed isFullWidth>
           <Container>
             <TabList>
-              {navmenu.map((item) => (
-                <Tab
-                  key={item.path}
-                  isActive={item.path === location.pathname}
-                  onClick={() => history.push(item.path)}
-                >
-                  <TabLink>{item.title}</TabLink>
-                </Tab>
-              ))}
+              {navmenu.map((item) => {
+                return (
+                  <Tab
+                    key={item.path}
+                    isActive={item.path === location.pathname}
+                    onClick={() => history.push(item.path)}
+                  >
+                    <TabLink>
+                      <span>{item.title}</span>
+                    </TabLink>
+                  </Tab>
+                );
+              })}
             </TabList>
           </Container>
         </Tabs>
